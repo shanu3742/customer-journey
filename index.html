@@ -30,6 +30,7 @@
             top: 0%;
             left: 0%;
             padding: 10px;
+            z-index: 2;
         }
         .box{
             width: 20px;
@@ -434,8 +435,8 @@ console.log(networkData)
 
         // set the dimensions and margins of the graph
 var margin = {top: 50, right: 30, bottom: 30, left: 80},
-  width = 1000 - margin.left - margin.right,
-  height = 800 - margin.top - margin.bottom;
+  width = window.innerWidth - margin.left - margin.right,
+  height = window.innerHeight - margin.top - margin.bottom;
 
 const journeyStatus =[
     {
@@ -456,7 +457,7 @@ const journeyStatus =[
  ];
  const color  ={
         app:'#fff7b9',
-        user:'green',
+        user:'#41dc8e',
         purchase:  '#2970ac',
         abandoned:  '#fd150b',
         intermediary:  '#ffc33b'
@@ -564,7 +565,7 @@ const radiusScale = d3.scaleLinear().domain([0,maxPurched]).range([5,19]);
         return  d?.profit?radiusScale(d.profit):5
       })
       .style("fill",(d) => {
-       return  d.id===networkData.nodes[0].id?"#fff7b9":d.type==='user'? 'green' :  d.name==='purched'?  "#2970ac":d.name==='Abandoned'? '#fd150b':'#ffc33b'
+       return  d.id===networkData.nodes[0].id?"#fff7b9":d.type==='user'? '#41dc8e' :  d.name==='purched'?  "#2970ac":d.name==='Abandoned'? '#fd150b':'#ffc33b'
         })
     .attr('opacity',1)
     .attr('class',(d) => {
