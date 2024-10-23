@@ -1,0 +1,605 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://d3js.org/d3.v6.js"></script>
+    <style>
+        body{
+            background-color: #101420;
+        }
+        *{
+            margin: 0%;
+            padding: 0%;
+            box-sizing: border-box;
+        }
+        .flex-box{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        circle{
+            cursor:pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="my_dataviz"></div>
+    <script>
+        let isDoubleClickOn = false;
+        const customerList =
+        
+        
+        {
+            name: 'facebook',
+            users: [
+                {
+                    name: 'kumar 123',
+                    id:'shanu123',
+                    image: '',
+                    profit:200,
+                    next: {
+                        action: 'login',
+                        next: {
+                            action: 'about',
+                            next: {
+                                action: 'Buy Now',
+                                next: {
+                                    action: 'purched',
+                                    next: null
+                                }
+                            }
+
+
+                        }
+                    }
+                },
+
+              
+                {
+                    name: 'rahul',
+                    image: '',
+                    id:'rahul143',
+                    profit:0,
+                    next: {
+                        action: 'login',
+                        next: {
+                            action: 'about',
+                            next: {
+                                action: 'Buy Now',
+                                next: {
+                                    action: 'Abandoned',
+                                    next: null
+                                }
+                            }
+
+
+                        }
+                    }
+                },
+                {
+                    name: 'ronak',
+                    image: '',
+                    id:'ronak4323',
+                    profit:0,
+                    next: {
+                        action: 'login',
+                        next: {
+                            action: 'about',
+                            next: {
+                                action: 'Buy Now',
+                                next: {
+                                    action: 'Abandoned',
+                                    next: null
+                                }
+                            }
+
+
+                        }
+                    }
+                },
+                {
+                    name: 'sohan',
+                    id:'sohan4313',
+                    profit:320,
+                    image: '',
+                    next: {
+                        action: 'login',
+                        next: {
+                            action: 'purched',
+                            next:null
+                        }
+                    }
+                },
+                {
+                    name: 'osho',
+                    id:'osho2313',
+                    profit:50,
+                    image: '',
+                    next: {
+                        action: 'login',
+                        next: {
+                            action: 'about',
+                            next: {
+                                action: 'purched',
+                                next:null
+                                    }
+                        }
+                    }
+                },
+                {
+                    name: 'santosh',
+                    id:'santosh313',
+                    profit:550,
+                    image: '',
+                    next: {
+                        action: 'login',
+                        next: {
+                            action: 'purched',
+                            next:null
+                        }
+                    }
+                },
+                {
+                    name: 'aman',
+                    id:'aman813',
+                    profit:750,
+                    image: '',
+                    next: {
+                        action: 'login',
+                        next: {
+                            action: 'purched',
+                            next:null
+                        }
+                    }
+                },
+                {
+                    name: 'aarya',
+                    id:'aarya414',
+                    profit:0,
+                    image: '',
+                    next: {
+                        action: 'login',
+                        next: {
+                                    action: 'Abandoned',
+                                    next: null
+                                }
+                    }
+                },
+                {
+                    name: 'ankit',
+                    id:'ankit34',
+                    profit:140,
+                    image: '',
+                    next: {
+                        action: 'purched',
+                        next:null
+                    }
+                },
+                {
+                    name: 'srinivas',
+                    id:'srinivas66',
+                    profit:0,
+                    image: '',
+                    next: {
+                        action: 'login',
+                        next: {
+                                    action: 'Abandoned',
+                                    next: null
+                                }
+                    }
+                },
+                {
+                    name: 'karteek',
+                    id:"karteek1985",
+                    profit:120,
+                    image: '',
+                    next: {
+                        action: 'purched',
+                        next:null
+                    }
+                },
+                {
+                    name: 'abhinav',
+                    id:"abhinav0812",
+                    profit:0,
+                    image: '',
+                    next: {
+                        action: 'login',
+                        next: {
+                            action: 'about',
+                            next: {
+                                action: 'Buy Now',
+                                next: {
+                                    action: 'Abandoned',
+                                    next: null
+                                }
+                            }
+
+
+                        }
+                    }
+                },
+                {
+                    name: 'abhinav',
+                    id:"abhinaved0812",
+                    profit:0,
+                    image: '',
+                    next: {
+                        action: 'login',
+                        next: {
+                            action: 'about',
+                            next: {
+                                action: 'Buy Now',
+                                next: {
+                                    action: 'Abandoned',
+                                    next: null
+                                }
+                            }
+
+
+                        }
+                    }
+                },
+                {
+                    name: 'abhinav',
+                    id:"abhinaddved0812",
+                    profit:0,
+                    image: '',
+                    next: {
+                        action: 'login',
+                        next: {
+                            action: 'about',
+                            next: {
+                                action: 'Buy Now',
+                                next: {
+                                    action: 'Abandoned',
+                                    next: null
+                                }
+                            }
+
+
+                        }
+                    }
+                },
+
+                {
+                    name: 'abhinav',
+                    id:"abhi88dved0812",
+                    profit:0,
+                    image: '',
+                    next: {
+                        action: 'login',
+                        next: {
+                            action: 'about',
+                            next: {
+                                action: 'Buy Now',
+                                next: {
+                                    action: 'Abandoned',
+                                    next: null
+                                }
+                            }
+
+
+                        }
+                    }
+                },
+                {
+                    name: 'kart2eek',
+                    id:"karteek0891985",
+                    profit:100,
+                    image: '',
+                    next: {
+                        action: 'purched',
+                        next:null
+                    }
+                },
+                {
+                    name: 'kartee2k',
+                    id:"kartlek023891985",
+                    profit:140,
+                    image: '',
+                    next: {
+                        action: 'purched',
+                        next:null
+                    }
+                },
+                {
+                    name: 'kart2eek',
+                    id:"karteek0289214985",
+                    profit:200,
+                    image: '',
+                    next: {
+                        action: 'purched',
+                        next:null
+                    }
+                },
+                {
+                    name: 'kartieek',
+                    id:"karteeks089132985",
+                    profit:140,
+                    image: '',
+                    next: {
+                        action: 'purched',
+                        next:null
+                    }
+                },
+                {
+                    name: 'kadrteek',
+                    id:"karteek089123985",
+                    profit:350,
+                    image: '',
+                    next: {
+                        action: 'purched',
+                        next:null
+                    }
+                },
+
+            ]
+        }
+
+
+
+        const networkData = {
+            nodes: [],
+            links: []
+
+        }
+
+
+        networkData.nodes.push(
+            {
+                "id": `${customerList.name}-${1+Math.floor((Math.random())*100)}`,
+                "name": customerList.name
+            },
+        )
+
+
+        const getNetworkData = (actionDetails, currentNodeId, userId,profit, actionCount = 0) => {
+            const actionNodeId = `${userId}-${actionCount}`;
+            const node = {
+                "id": actionNodeId,
+                "name": actionDetails.action 
+            };
+            if(actionDetails.next===null){
+                node.profit=profit;
+            }
+            const link = {
+                source: currentNodeId,
+                target: actionNodeId
+            };
+
+            networkData.nodes.push(node);
+            networkData.links.push(link);
+
+            if (actionDetails.next === null) {
+                return;
+            } else {
+                getNetworkData(actionDetails.next, actionNodeId, userId,profit, actionCount + 1);
+            }
+};
+
+        customerList.users.forEach((user, i) => {
+            const node = {
+                "id": user.id,
+                "name":user.name,
+            };
+            networkData.nodes.push(node);
+
+            const link = {
+                source: networkData.nodes[0].id,
+                target: user.id
+            };
+
+            networkData.links.push(link)
+
+            getNetworkData(user.next, user.id, user.id,user.profit)
+        })
+
+
+
+
+    const maxPurched = d3.max(customerList.users,(user) => user.profit)
+console.log(networkData)
+
+        // set the dimensions and margins of the graph
+var margin = {top: 50, right: 30, bottom: 30, left: 80},
+  width = 1000 - margin.left - margin.right,
+  height = 800 - margin.top - margin.bottom;
+
+
+
+// append the svg object to the body of the page
+const selectorId="#my_dataviz"
+var svg = d3.select(selectorId)
+             .attr('class','flex-box')
+            .append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform",
+                    "translate(" + margin.left + "," + margin.top + ")");
+
+let rect = svg.append('rect').attr('width',width).attr('height',height).attr('fill','transparent')
+
+function drag(simulation) {    
+    function dragstarted(event) {
+      if (!event.active) simulation.alphaTarget(0.3).restart();
+      event.subject.fx = event.subject.x;
+      event.subject.fy = event.subject.y;
+    }
+    
+    function dragged(event) {
+      event.subject.fx = event.x;
+      event.subject.fy = event.y;
+    }
+    
+    function dragended(event) {
+      if (!event.active) simulation.alphaTarget(0);
+      event.subject.fx = null;
+      event.subject.fy = null;
+    }
+    
+    return d3.drag()
+      .on("start", dragstarted)
+      .on("drag", dragged)
+      .on("end", dragended);
+
+  }
+
+  // Let's list the force we wanna apply on the network
+  var simulation = d3.forceSimulation(networkData.nodes)                 // Force algorithm is applied to data.nodes
+      .force("link", d3.forceLink()                               // This force provides links between nodes
+            .id(function(d) { return d.id; })                     // This provide  the id of a node
+            .links(networkData.links)                                    // and this the list of links
+      )
+      .force("charge", d3.forceManyBody().strength(-50))         // This adds repulsion between nodes. Play with the -400 for the repulsion strength
+      .force("center", d3.forceCenter(width / 2, height / 2))     // This force attracts nodes to the center of the svg area
+      .on("tick", ticked)
+      .on("end", ticked);
+
+const radiusScale = d3.scaleLinear().domain([0,maxPurched]).range([5,19]);
+
+
+
+        
+  // Initialize the links
+  var link = svg
+    .selectAll("line")
+    .data(networkData.links)
+    .enter()
+    .append("line")
+    .style("stroke", "#d4d4d4")
+    .attr('opacity',0.4)
+    .attr('class', (d) => {
+        let id = d.target.id.split('-')[0];
+        console.log(id)
+        return id
+    })
+      // Initialize the nodes
+  var node = svg
+    .selectAll("circle")
+    .data(networkData.nodes)
+    .enter()
+    .append("circle")
+      .attr("r", (d) => {
+        return  d?.profit?radiusScale(d.profit):5
+      })
+      .style("fill",(d) => {
+       return  d.id===networkData.nodes[0].id?"#fff7b9":d.name==='purched'?  "#2970ac":d.name==='Abandoned'? '#fd150b':'#ffc33b'
+        })
+    .attr('opacity',1)
+    .attr('class',(d) => {
+        let className = d.id.split('-')[0];
+        return className;
+    })
+    .on('dblclick',function (d,data,index){
+        isDoubleClickOn=true;
+        let selectedCircleType = data.id.split('-')[0];
+        console.log(selectedCircleType);
+        let appIconNodesText = d3.select('text')
+        let selectedCircle = d3.selectAll(`circle.${selectedCircleType}`)
+        selectedCircle.attr('opacity',1);
+
+        let selectedline = d3.selectAll(`line.${selectedCircleType}`);
+        selectedline.attr('opacity',0.4);
+
+        let selectedText = d3.selectAll(`text.${selectedCircleType}`);
+        let nodes = d3.selectAll('circle');
+        let deseletedFilterNode =    node.filter((el,i) => {
+            console.log(el,i,'index')
+            return !el.id.includes(selectedCircleType) && i !==0;
+        })
+
+        let link  = d3.selectAll('line');
+        let deseletedFilterLine =    link.filter((el) => {
+            return !el.target.id.includes(selectedCircleType);
+        })
+        appIconNodesText.transition().duration(500).attr('opacity',1)
+        selectedText.transition().duration(500).attr('opacity',1)
+        deseletedFilterLine.transition().duration(500).attr('opacity',0)   
+        deseletedFilterNode.transition().duration(500).attr('opacity',0)
+
+    })
+    .on('mouseover',function (d,data) {
+        if(isDoubleClickOn){
+            return
+        }
+        d3.selectAll('circle').transition().duration(500).attr('opacity',0.2)
+        let seletcedNode = d3.select(this).transition().duration(500).attr('opacity',1)
+        d3.selectAll('line').transition().duration(500).attr('opacity',0.2)
+        console.log('mouseover d',data)
+        d3.select(`text#${data.id}`).transition().duration(500).attr('opacity',1)
+    })
+    .on('mouseout',function (d,data) {
+        if(isDoubleClickOn){
+            return
+        }
+        d3.selectAll('circle').transition().duration(500).attr('opacity',1)
+        d3.selectAll('line').transition().duration(500).attr('opacity',0.4)
+        d3.select(`text#${data.id}`).transition().duration(500).attr('opacity',0)
+    })
+      .call(drag(simulation));
+
+ // Initialize the nodes
+ var text = svg
+    .selectAll("text")
+    .data(networkData.nodes)
+    .enter()
+    .append("text")
+    .attr('opacity',0)
+    .attr('class',(d) => {
+        let className = d.id.split('-')[0];
+        return className;
+    })
+    .text((d) => {
+        return d.name
+    })
+    .attr("dx", (d) => {
+        return  d?.profit?radiusScale(d.profit):5
+      })
+    .attr('fill','white')
+    .attr('id',(d) => {
+        let id = d.id;
+        return id;
+    })
+
+
+ 
+      rect.on('click',() => {
+        isDoubleClickOn=false;
+        d3.selectAll('circle').transition().duration(500).attr('opacity',1)
+        d3.selectAll('line').transition().duration(500).attr('opacity',0.4)
+        d3.selectAll('text').transition().duration(500).attr('opacity',0)
+    })
+
+
+  // This function is run at each iteration of the force algorithm, updating the nodes position.
+  function ticked() {
+    link
+        .attr("x1", function(d) { return d.source.x; })
+        .attr("y1", function(d) { return d.source.y; })
+        .attr("x2", function(d) { return d.target.x; })
+        .attr("y2", function(d) { return d.target.y; });
+
+    node
+         .attr("cx", function (d) { return d.x; })
+         .attr("cy", function(d) { return d.y; });
+
+
+         
+    text
+         .attr("x", function (d) { return d.x; })
+         .attr("y", function(d) { return d.y; });
+  }
+
+
+
+ 
+    </script>
+
+</body>
+
+</html>
