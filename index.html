@@ -6,6 +6,11 @@
     <title>Document</title>
     <script src="https://d3js.org/d3.v6.js"></script>
     <style>
+        :root {
+  --background-gradient: linear-gradient(178deg, #ffff33 10%, #3333ff);
+  --gray: #34495e;
+  --darkgray: #2c3e50;
+}
         body{
             background-color: #101420;
         }
@@ -46,12 +51,66 @@
         .legend-container>div{
             margin-right: 10px;
         }
+
+        select {
+  /* Reset Select */
+  appearance: none;
+  outline: 10px red;
+  border: 0;
+  box-shadow: none;
+  /* Personalize */
+  flex: 1;
+  padding: 0 1em;
+  color: #fff;
+  background-color: var(--darkgray);
+  background-image: none;
+  cursor: pointer;
+}
+/* Remove IE arrow */
+select::-ms-expand {
+  display: none;
+}
+/* Custom Select wrapper */
+.select {
+  position: fixed;
+  top:10px;
+  right:10px;
+  display: flex;
+  width: 20em;
+  height: 3em;
+  border-radius: .25em;
+  overflow: hidden;
+}
+/* Arrow */
+.select::after {
+  content: '\25BC';
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 1em;
+  background-color: #34495e;
+  transition: .25s all ease;
+  pointer-events: none;
+}
+/* Transition */
+.select:hover::after {
+  color: #f39c12;
+}
     </style>
 </head>
 
 <body>
     <div id="my_dataviz">
         <div class="legend"></div>
+        <div class="select" >
+            <select id="select-box">
+                <option>All</option>
+                <option>purched</option>
+                <option>Abandoned</option>
+                <option>Abandoned</option>
+                <option>name</option>
+            </select>
+        </div>
     </div>
     <script>
         let isDoubleClickOn = false;
@@ -413,7 +472,8 @@
             const node = {
                 "id": user.id,
                 "name":user.name,
-                "type":'user'
+                "type":'user',
+                'uniqueClass':'name'
             };
             networkData.nodes.push(node);
 
@@ -464,6 +524,46 @@ const journeyStatus =[
     }
  
 
+
+    const statusSelect = document.getElementById("select-box");
+
+// Attach a change event listener
+statusSelect.addEventListener("change", function () {
+    console.log(statusSelect)
+    // Get the selected option's value
+    const selectedOption = statusSelect.value;
+    
+    // Log the selected option or perform other actions
+    console.log("Selected option:", selectedOption);
+
+    if(selectedOption==='name'){
+        let selectedCircle = d3.selectAll(`circle`);
+        let selectedLine = d3.selectAll(`line`);
+
+        let filterCircle = selectedCircle.filter((el,i) => { 
+            return el.uniqueClass ===selectedOption || i===0
+        })
+        let filterLine= selectedLine.filter((el,i) => { 
+            console.log(el)
+            if(!el?.target?.uniqueClass){
+                return false
+            }
+            return el?.target?.uniqueClass ===selectedOption 
+        })
+        selectedLine.attr('opacity',0);
+        filterLine.attr('opacity',1)
+        selectedCircle.attr('opacity',0);
+        filterCircle.attr('opacity',1)
+        
+    }
+    if(selectedOption==='All'){
+        d3.selectAll('circle').transition().duration(500).attr('opacity',1)
+        d3.selectAll('line').transition().duration(500).attr('opacity',0.4)
+        d3.select(`text#${data.id}`).transition().duration(500).attr('opacity',0)
+    }
+
+
+})
 const selectorId="#my_dataviz"
 // append the svg object to the body of the page
 const graphConatiner =  d3.select(selectorId)
@@ -553,7 +653,7 @@ const radiusScale = d3.scaleLinear().domain([0,maxPurched]).range([5,19]);
     .attr('class', (d) => {
         let id = d.target.id.split('-')[0];
         console.log(id)
-        return id
+        return `${id} ${d.target.uniqueClass?d.target.uniqueClass:''}`
     })
       // Initialize the nodes
   var node = svg
@@ -570,7 +670,7 @@ const radiusScale = d3.scaleLinear().domain([0,maxPurched]).range([5,19]);
     .attr('opacity',1)
     .attr('class',(d) => {
         let className = d.id.split('-')[0];
-        return className;
+        return `${className} ${d.uniqueClass?d.uniqueClass:''}`;
     })
     .on('dblclick',function (d,data,index){
         isDoubleClickOn=true;
