@@ -551,7 +551,6 @@ const legendContainer = graphConatiner.selectAll('div.legend')
              .text((d) => d[Object.keys(d)[0]])
              .style('color','white')
 
-graphConatiner.selectAll('svg').remove()
 var svg = graphConatiner
             .selectAll("svg")
             .data([1])
@@ -603,6 +602,7 @@ function drag(simulation) {
       .on("tick", ticked)
       .on("end", ticked);
 
+
 const radiusScale = d3.scaleLinear().domain([0,maxPurched]).range([5,19]);
 
 
@@ -620,6 +620,31 @@ const radiusScale = d3.scaleLinear().domain([0,maxPurched]).range([5,19]);
         console.log(id)
         return `${id} ${d.target.uniqueClass?d.target.uniqueClass:''}`
     })
+
+
+ // Initialize the nodes
+ var text = svg
+    .selectAll("text")
+    .data(networkData.nodes)
+    .join("text")
+    .attr('opacity',0)
+    .attr('class',(d) => {
+        let className = d.id.split('-')[0];
+        return className;
+    })
+    .text((d) => {
+        return d.name
+    })
+    .attr("dx", (d) => {
+        return  d?.profit?radiusScale(d.profit):5
+      })
+    .attr('fill','white')
+    .attr('id',(d) => {
+        let id = d.id;
+        return id;
+    })
+
+
       // Initialize the nodes
   var node = svg
     .selectAll("circle")
@@ -637,6 +662,9 @@ const radiusScale = d3.scaleLinear().domain([0,maxPurched]).range([5,19]);
         return `${className} ${d.uniqueClass?d.uniqueClass:''}`;
     })
     .on('dblclick',function (d,data,index){
+        if(i===0){
+            return;
+        }
         isDoubleClickOn=true;
         let selectedCircleType = data.id.split('-')[0];
         console.log(selectedCircleType);
@@ -683,28 +711,6 @@ const radiusScale = d3.scaleLinear().domain([0,maxPurched]).range([5,19]);
         d3.select(`text#${data.id}`).transition().duration(500).attr('opacity',0)
     })
       .call(drag(simulation));
-
- // Initialize the nodes
- var text = svg
-    .selectAll("text")
-    .data(networkData.nodes)
-    .join("text")
-    .attr('opacity',0)
-    .attr('class',(d) => {
-        let className = d.id.split('-')[0];
-        return className;
-    })
-    .text((d) => {
-        return d.name
-    })
-    .attr("dx", (d) => {
-        return  d?.profit?radiusScale(d.profit):5
-      })
-    .attr('fill','white')
-    .attr('id',(d) => {
-        let id = d.id;
-        return id;
-    })
 
 
  
