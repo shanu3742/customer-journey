@@ -107,17 +107,13 @@ select::-ms-expand {
                 <option>All</option>
                 <option>purched</option>
                 <option>Abandoned</option>
-                <option>Abandoned</option>
                 <option>name</option>
             </select>
         </div>
     </div>
     <script>
         let isDoubleClickOn = false;
-        const customerList =
-        
-        
-        {
+        let data = {
             name: 'facebook',
             users: [
                 {
@@ -424,15 +420,17 @@ select::-ms-expand {
 
             ]
         }
+        let customerData =  JSON.parse(JSON.stringify(data));
+        
+        // Attach a change event listener
+  
 
-
-
+      const draw = (customerList) => {
         const networkData = {
             nodes: [],
             links: []
 
         }
-
 
         networkData.nodes.push(
             {
@@ -483,8 +481,10 @@ select::-ms-expand {
             };
 
             networkData.links.push(link)
-
-            getNetworkData(user.next, user.id, user.id,user.profit)
+                if(user.next){
+                    getNetworkData(user.next, user.id, user.id,user.profit)
+                }
+           
         })
 
 
@@ -523,47 +523,6 @@ const journeyStatus =[
         intermediary:  '#ffc33b'
     }
  
-
-
-    const statusSelect = document.getElementById("select-box");
-
-// Attach a change event listener
-statusSelect.addEventListener("change", function () {
-    console.log(statusSelect)
-    // Get the selected option's value
-    const selectedOption = statusSelect.value;
-    
-    // Log the selected option or perform other actions
-    console.log("Selected option:", selectedOption);
-
-    if(selectedOption==='name'){
-        let selectedCircle = d3.selectAll(`circle`);
-        let selectedLine = d3.selectAll(`line`);
-
-        let filterCircle = selectedCircle.filter((el,i) => { 
-            return el.uniqueClass ===selectedOption || i===0
-        })
-        let filterLine= selectedLine.filter((el,i) => { 
-            console.log(el)
-            if(!el?.target?.uniqueClass){
-                return false
-            }
-            return el?.target?.uniqueClass ===selectedOption 
-        })
-        selectedLine.attr('opacity',0);
-        filterLine.attr('opacity',1)
-        selectedCircle.attr('opacity',0);
-        filterCircle.attr('opacity',1)
-        
-    }
-    if(selectedOption==='All'){
-        d3.selectAll('circle').transition().duration(500).attr('opacity',1)
-        d3.selectAll('line').transition().duration(500).attr('opacity',0.4)
-        d3.select(`text#${data.id}`).transition().duration(500).attr('opacity',0)
-    }
-
-
-})
 const selectorId="#my_dataviz"
 // append the svg object to the body of the page
 const graphConatiner =  d3.select(selectorId)
@@ -591,15 +550,22 @@ const legendContainer = graphConatiner.selectAll('div.legend')
              .attr('class','legend-text')
              .text((d) => d[Object.keys(d)[0]])
              .style('color','white')
+
+graphConatiner.selectAll('svg').remove()
 var svg = graphConatiner
-            .append("svg")
+            .selectAll("svg")
+            .data([1])
+            .join('svg')
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
-            .append("g")
+            .selectAll("g#graph-area")
+            .data((d) => [d])
+            .join('g')
+            .attr('id','graph-area')
             .attr("transform",
                     "translate(" + margin.left + "," + margin.top + ")");
 
-let rect = svg.append('rect').attr('width',width).attr('height',height).attr('fill','transparent')
+let rect = svg.selectAll('rect.overlay').data([1]).join('rect').attr('class','overlay').attr('width',width).attr('height',height).attr('fill','transparent')
 
 function drag(simulation) {    
     function dragstarted(event) {
@@ -646,8 +612,7 @@ const radiusScale = d3.scaleLinear().domain([0,maxPurched]).range([5,19]);
   var link = svg
     .selectAll("line")
     .data(networkData.links)
-    .enter()
-    .append("line")
+    .join("line")
     .style("stroke", "#d4d4d4")
     .attr('opacity',0.4)
     .attr('class', (d) => {
@@ -659,12 +624,11 @@ const radiusScale = d3.scaleLinear().domain([0,maxPurched]).range([5,19]);
   var node = svg
     .selectAll("circle")
     .data(networkData.nodes)
-    .enter()
-    .append("circle")
-      .attr("r", (d) => {
+    .join("circle")
+    .attr("r", (d) => {
         return  d?.profit?radiusScale(d.profit):5
       })
-      .style("fill",(d) => {
+    .style("fill",(d) => {
        return  d.id===networkData.nodes[0].id?"#fff7b9":d.type==='user'? '#41dc8e' :  d.name==='purched'?  "#2970ac":d.name==='Abandoned'? '#fd150b':'#ffc33b'
         })
     .attr('opacity',1)
@@ -724,8 +688,7 @@ const radiusScale = d3.scaleLinear().domain([0,maxPurched]).range([5,19]);
  var text = svg
     .selectAll("text")
     .data(networkData.nodes)
-    .enter()
-    .append("text")
+    .join("text")
     .attr('opacity',0)
     .attr('class',(d) => {
         let className = d.id.split('-')[0];
@@ -774,7 +737,81 @@ const radiusScale = d3.scaleLinear().domain([0,maxPurched]).range([5,19]);
 
 
 
- 
+
+        }
+
+
+        draw(customerData)
+const statusSelect = document.getElementById("select-box");
+statusSelect.addEventListener("change", function () {
+    console.log(statusSelect)
+    // Get the selected option's value
+    const selectedOption = statusSelect.value;
+    
+    // Log the selected option or perform other actions
+    console.log("Selected option:", selectedOption);
+
+    if(selectedOption==='name'){
+    
+        let result = {...data,users:data.users.map((el) => {
+            return {
+                name:el.name,
+                id:el.id
+            }
+        })}
+        console.log('result',result)
+        customerData = JSON.parse(JSON.stringify(result));
+        
+    }
+    if(selectedOption==='name'){
+    
+    let result = {...data,users:data.users.map((el) => {
+        return {
+            name:el.name,
+            id:el.id
+        }
+    })}
+    console.log('result',result)
+    customerData = JSON.parse(JSON.stringify(result));
+    
+}
+
+if(selectedOption==='purched'){
+    
+    let result = {...data,users:data.users.filter((el) => {
+        let stringObject = JSON.stringify(el).toLocaleLowerCase();
+
+        return  stringObject.includes(selectedOption.toLocaleLowerCase())
+    })}
+    console.log('result',result)
+    customerData = JSON.parse(JSON.stringify(result));
+    
+}
+
+if(selectedOption==='Abandoned'){
+    let result = {...data,users:data.users.filter((el) => {
+        let stringObject = JSON.stringify(el).toLocaleLowerCase();
+
+        return  stringObject.includes(selectedOption.toLocaleLowerCase())
+    })}
+    console.log('result',result)
+    customerData = JSON.parse(JSON.stringify(result));
+}
+
+    if(selectedOption==='All'){
+        customerData = JSON.parse(JSON.stringify(data));
+    }
+
+    draw(customerData)
+
+
+})
+     
+
+
+      
+
+       
     </script>
 
 </body>
