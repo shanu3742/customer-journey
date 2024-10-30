@@ -103,15 +103,23 @@ select::-ms-expand {
     <div id="my_dataviz">
         <div class="legend"></div>
         <div class="select" >
-            <select id="select-box">
-                <option>All</option>
-                <option>purched</option>
-                <option>Abandoned</option>
-                <option>name</option>
-            </select>
         </div>
     </div>
     <script>
+        let selectBoxContaioner = d3.selectAll('div.select')
+                                    .data([1])
+                                    .join('div')
+                                    .attr('class','select')
+        let selectBox = selectBoxContaioner.selectAll('select#select-box')
+                                            .data([1])
+                                            .join('select')
+                                            .attr('id','select-box')
+            
+        let selectOption = ['All', 'purched','Abandoned','name'];
+        selectBox.selectAll('option')
+                 .data(selectOption)
+                 .join('option')
+                 .text((d) => d)
         let isDoubleClickOn = false;
         let data = {
             name: 'facebook',
