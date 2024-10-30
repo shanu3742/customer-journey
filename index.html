@@ -670,8 +670,8 @@ const radiusScale = d3.scaleLinear().domain([0,maxPurched]).range([5,19]);
         return `${className} ${d.uniqueClass?d.uniqueClass:''}`;
     })
     .on('dblclick',function (d,data,index){
-        if(i===0){
-            return;
+        if(index ===0){
+            return
         }
         isDoubleClickOn=true;
         let selectedCircleType = data.id.split('-')[0];
