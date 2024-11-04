@@ -133,13 +133,22 @@ select::-ms-expand {
                         action: 'login',
                         next: {
                             action: 'about',
-                            next: {
+                            next: [
+                            {
+                                action: 'Add another product',
+                                next: {
+                                    action: 'purched',
+                                    next: null
+                                }
+                            },
+                            {
                                 action: 'Buy Now',
                                 next: {
                                     action: 'purched',
                                     next: null
                                 }
                             }
+                            ]
 
 
                         }
@@ -449,51 +458,58 @@ select::-ms-expand {
         )
 
 
-        const getNetworkData = (actionDetails, currentNodeId, userId,profit, actionCount = 0) => {
-            const actionNodeId = `${userId}-${actionCount}`;
-            const node = {
-                "id": actionNodeId,
-                "name": actionDetails.action,
-                "type":'journey'
-            };
-            if(actionDetails.next===null){
-                node.profit=profit;
-            }
-            const link = {
-                source: currentNodeId,
-                target: actionNodeId
-            };
+        const getNetworkData = (actionDetails, currentNodeId, userId, profit, actionCount = 0) => {
+    const actionNodeId = `${userId}-${actionCount}`;
+    const node = {
+        "id": actionNodeId,
+        "name": actionDetails.action,
+        "type": 'journey'
+    };
+    if (actionDetails.next === null) {
+        node.profit = profit;
+    }
+    const link = {
+        source: currentNodeId,
+        target: actionNodeId
+    };
 
-            networkData.nodes.push(node);
-            networkData.links.push(link);
+    networkData.nodes.push(node);
+    networkData.links.push(link);
 
-            if (actionDetails.next === null) {
-                return;
-            } else {
-                getNetworkData(actionDetails.next, actionNodeId, userId,profit, actionCount + 1);
-            }
+    if (actionDetails.next === null) {
+        return;
+    } else if (Array.isArray(actionDetails.next)) {
+        // Handle each next action if it is an array
+        actionDetails.next.forEach((nextAction, index) => {
+
+            let nodeId = actionCount+'next'+index+1;
+            getNetworkData(nextAction, actionNodeId, userId, profit,nodeId);
+        });
+    } else {
+        // Handle the single next action
+        getNetworkData(actionDetails.next, actionNodeId, userId, profit, actionCount + 1);
+    }
 };
 
-        customerList.users.forEach((user, i) => {
-            const node = {
-                "id": user.id,
-                "name":user.name,
-                "type":'user',
-                'uniqueClass':'name'
-            };
-            networkData.nodes.push(node);
+customerList.users.forEach((user) => {
+    const node = {
+        "id": user.id,
+        "name": user.name,
+        "type": 'user',
+        'uniqueClass': 'name'
+    };
+    networkData.nodes.push(node);
 
-            const link = {
-                source: networkData.nodes[0].id,
-                target: user.id
-            };
+    const link = {
+        source: networkData.nodes[0].id,
+        target: user.id
+    };
 
-            networkData.links.push(link)
-                if(user.next){
-                    getNetworkData(user.next, user.id, user.id,user.profit)
-                }
-           
-        })
+    networkData.links.push(link);
+    if (user.next) {
+        getNetworkData(user.next, user.id, user.id, user.profit);
+    }
+});
 
 
 
