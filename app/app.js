@@ -1,4 +1,42 @@
   import SelectBox from "/component/SelectBox.js";
+  import CoustomerFactory from "/factory/Coustomer.journey.js";
+  import Legend from "/component/Legend.js";
+  const selectorId = "#my_dataviz"
+  const margin = { top: 50, right: 30, bottom: 30, left: 80 };
+   // append the svg object to the body of the page
+  const graphConatiner = d3.select(selectorId)
+   .attr('class', 'flex-box');
+  const legendDetails = {
+    app: {
+      color:'#fff7b9',
+      label:'application name'
+    },
+    user: {
+     color: '#41dc8e',
+     label:'user name'
+    },
+    purchase: {
+      color:'#2970ac',
+      label:'Purchase completed'
+    },
+    abandoned:{
+      color: '#fd150b',
+      label:'Cart Abandoned'
+    },
+    intermediary:{
+      color: '#ffc33b',
+      label:'Intermediary action taken by customer'
+    }
+  }
+  let legend = new Legend();
+      legend.data(legendDetails)
+            .parent(graphConatiner)
+            .legendContainer('legend-container',0,0)
+            .dot()
+            .text()
+
+
+  let networkFactory = new CoustomerFactory();
   // import data  from '/coustomer/journey/getData'
  let data={};
  let customerData = {}
@@ -17,138 +55,12 @@ let isDoubleClickOn = false;
 
 
 const draw = (customerList) => {
-  const networkData = {
-    nodes: [],
-    links: []
 
-  }
-
-  networkData.nodes.push(
-    {
-      "id": `${customerList.name}-${1 + Math.floor((Math.random()) * 100)}`,
-      "name": customerList.name,
-      "type": "app"
-    },
-  )
-
-
-  const getNetworkData = (actionDetails, currentNodeId, userId, profit, actionCount = 0) => {
-    const actionNodeId = `${userId}-${actionCount}`;
-    const node = {
-      "id": actionNodeId,
-      "name": actionDetails.action,
-      "type": 'journey'
-    };
-    if (actionDetails.next === null) {
-      node.profit = profit;
-    }
-    const link = {
-      source: currentNodeId,
-      target: actionNodeId
-    };
-
-    networkData.nodes.push(node);
-    networkData.links.push(link);
-
-    if (actionDetails.next === null) {
-      return;
-    } else if (Array.isArray(actionDetails.next)) {
-      // Handle each next action if it is an array
-      actionDetails.next.forEach((nextAction, index) => {
-
-        let nodeId = actionCount + 'next' + index + 1;
-        getNetworkData(nextAction, actionNodeId, userId, profit, nodeId);
-      });
-    } else {
-      // Handle the single next action
-      getNetworkData(actionDetails.next, actionNodeId, userId, profit, actionCount + 1);
-    }
-  };
-
-  customerList.users.forEach((user) => {
-    const node = {
-      "id": user.id,
-      "name": user.name,
-      "type": 'user',
-      'uniqueClass': 'name'
-    };
-    networkData.nodes.push(node);
-
-    const link = {
-      source: networkData.nodes[0].id,
-      target: user.id
-    };
-
-    networkData.links.push(link);
-    if (user.next) {
-      getNetworkData(user.next, user.id, user.id, user.profit);
-    }
-  });
-
-
-
-
+  let networkData = networkFactory.coustomerNetworkFactory(customerList)
   const maxPurched = d3.max(customerList.users, (user) => user.profit)
-  console.log(networkData)
-
   // set the dimensions and margins of the graph
-  var margin = { top: 50, right: 30, bottom: 30, left: 80 },
-    width = window.innerWidth - margin.left - margin.right,
-    height = window.innerHeight - margin.top - margin.bottom;
-
-  const journeyStatus = [
-    {
-      app: 'application name'
-    },
-    {
-      user: 'user name'
-    },
-    {
-      purchase: 'Purchase completed'
-    },
-    {
-      abandoned: 'Cart Abandoned'
-    },
-    {
-      intermediary: 'Intermediary action taken by customer'
-    }
-  ];
-  const color = {
-    app: '#fff7b9',
-    user: '#41dc8e',
-    purchase: '#2970ac',
-    abandoned: '#fd150b',
-    intermediary: '#ffc33b'
-  }
-
-  const selectorId = "#my_dataviz"
-  // append the svg object to the body of the page
-  const graphConatiner = d3.select(selectorId)
-    .attr('class', 'flex-box');
-  const legendContainer = graphConatiner.selectAll('div.legend')
-    .data([1])
-    .join('div')
-    .attr('class', 'legend')
-
-  let legend = legendContainer.selectAll('div.legend-container')
-    .data(journeyStatus)
-    .join('div')
-    .attr('class', 'legend-container')
-
-  legend.selectAll('div.box')
-    .data((d) => [d])
-    .join('div')
-    .attr('class', 'box')
-    .style('background', (d) => color[Object.keys(d)[0]])
-
-
-  legend.selectAll('div.legend-text')
-    .data((d) => [d])
-    .join('div')
-    .attr('class', 'legend-text')
-    .text((d) => d[Object.keys(d)[0]])
-    .style('color', 'white')
-
+  let   width = window.innerWidth - margin.left - margin.right;
+  let   height = window.innerHeight - margin.top - margin.bottom;
   var svg = graphConatiner
     .selectAll("svg")
     .data([1])
@@ -251,7 +163,7 @@ const draw = (customerList) => {
       return d?.profit ? radiusScale(d.profit) : 5
     })
     .style("fill", (d) => {
-      return d.id === networkData.nodes[0].id ? "#fff7b9" : d.type === 'user' ? '#41dc8e' : d.name === 'purched' ? "#2970ac" : d.name === 'Abandoned' ? '#fd150b' : '#ffc33b'
+      return d.id === networkData.nodes[0].id ?legendDetails.app.color: d.type === 'user' ? legendDetails.user.color: d.name === 'purched' ? legendDetails.purchase.color : d.name === 'Abandoned' ?legendDetails.abandoned.color : legendDetails.intermediary.color
     })
     .attr('opacity', 1)
     .attr('class', (d) => {
@@ -423,5 +335,7 @@ selectBoxComp.addparent('select')
 
 
 
-
+window.addEventListener('resize',() => {
+  draw(customerData)
+})
 
