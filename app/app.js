@@ -1,17 +1,7 @@
-let selectBoxContaioner = d3.selectAll('div.select')
-  .data([1])
-  .join('div')
-  .attr('class', 'select')
-let selectBox = selectBoxContaioner.selectAll('select#select-box')
-  .data([1])
-  .join('select')
-  .attr('id', 'select-box')
+  import SelectBox from "/component/SelectBox.js";
 
-let selectOption = ['All', 'purched', 'Abandoned', 'name'];
-selectBox.selectAll('option')
-  .data(selectOption)
-  .join('option')
-  .text((d) => d)
+
+  
 let isDoubleClickOn = false;
 let data = {
   name: 'facebook',
@@ -1044,7 +1034,6 @@ const draw = (customerList) => {
     .attr('opacity', 0.4)
     .attr('class', (d) => {
       let id = d.target.id.split('-')[0];
-      console.log(id)
       return `${id} ${d.target.uniqueClass ? d.target.uniqueClass : ''}`
     })
 
@@ -1175,11 +1164,10 @@ const draw = (customerList) => {
 
 
 draw(customerData)
-const statusSelect = document.getElementById("select-box");
-statusSelect.addEventListener("change", function () {
-  console.log(statusSelect)
+
+const onSelectBoxChange = (e) => {
   // Get the selected option's value
-  const selectedOption = statusSelect.value;
+  const selectedOption = e.target.value;
 
   // Log the selected option or perform other actions
   console.log("Selected option:", selectedOption);
@@ -1244,9 +1232,13 @@ statusSelect.addEventListener("change", function () {
   }
 
   draw(customerData)
+}
 
+let selectBoxComp = new SelectBox(['All', 'purched', 'Abandoned', 'name']);
 
-})
+selectBoxComp.addparent('select')
+             .addChild('select-box')
+             .onChange(onSelectBoxChange)
 
 
 
