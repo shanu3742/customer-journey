@@ -1,0 +1,88 @@
+:root {
+    --background-gradient: linear-gradient(178deg, #ffff33 10%, #3333ff);
+    --gray: #34495e;
+    --darkgray: #2c3e50;
+}
+body {
+    background-color: #101420;
+}
+section{
+    margin-top: 60px;
+}
+.page-container{
+    display: flex;
+    flex-direction: column;
+}
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+.circle{
+    border-radius: 50%;
+}
+.flex-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.space-between{
+    justify-content: space-between;
+}
+circle {
+    cursor: pointer;
+}
+#my_dataviz {
+    position: relative;
+}
+
+.box {
+    width: 20px;
+    height: 20px;
+    background-color: black;
+    border-radius: 50%;
+    margin: 5px;
+}
+.legend-container {
+    display: flex;
+    align-items: center;
+}
+.legend-container > div {
+    margin-right: 10px;
+}
+select {
+    appearance: none;
+    outline: none;
+    border: 0;
+    box-shadow: none;
+    flex: 1;
+    padding: 0 1em;
+    color: #fff;
+    background-color: var(--darkgray);
+    background-image: none;
+    cursor: pointer;
+}
+select::-ms-expand {
+    display: none;
+}
+.select {
+    display: flex;
+    width: 20em;
+    height: 3em;
+    border-radius: .25em;
+    overflow: hidden;
+}
+.select::after {
+    content: '\25BC';
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 1em;
+    background-color: #34495e;
+    transition: .25s all ease;
+    pointer-events: none;
+}
+.select:hover::after {
+    color: #f39c12;
+}
+

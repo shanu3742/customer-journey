@@ -1,3 +1,4 @@
+
 class Legend{
     #legendDetails={};
     #parentElement

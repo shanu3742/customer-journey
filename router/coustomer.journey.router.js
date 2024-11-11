@@ -1,14 +1,9 @@
-const { onIndexRedirection,getCustomerJourney, appController, getCustomerJourneyData } = require('../controller/coustomer.journey.controller')
-const path = require('path');
+const { onIndexRedirection,getCustomerJourney, coustomerJourneyPageCtr, getCustomerJourneyData } = require('../controller/coustomer.journey.controller')
 const express = require('express');
 const router = express.Router();
-
-
-router.use(express.static(path.join(__dirname, 'public')));
 router.get('/',onIndexRedirection)
 router.get('/coustomer/journey/getJourney',getCustomerJourney)
 router.get('/coustomer/journey/getData',getCustomerJourneyData)
-router.get('/coustomer/journey/app',appController)
-
+router.get('/coustomer/journey/coustomerJourneyPageCtr',coustomerJourneyPageCtr)
 module.exports= router;
 

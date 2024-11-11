@@ -9,11 +9,14 @@ class SelectBox  {
      
     }
 
-    addparent(parentClass='select'){
+    addparent(parentClass='select',top=0,left=0){
         this.#selectBoxContaioner = d3.selectAll(`div.${parentClass}`)
         .data([1])
         .join('div')
         .attr('class', `${parentClass}`)
+        .style('position','absolute')
+        .style('top',top)
+        .style('left',left)
         return this;
     }
     addChild(childId='select-box'){

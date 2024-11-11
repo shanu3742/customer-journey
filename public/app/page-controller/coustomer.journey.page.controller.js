@@ -1,6 +1,11 @@
-  import SelectBox from "/component/SelectBox.js";
-  import CoustomerAdapter from "/adapter/Coustomer.journey.js";
-  import Legend from "/component/Legend.js";
+  import SelectBox from "/app/component/SelectBox.js";
+  import CoustomerAdapter from "/app/adapter/Coustomer.journey.js";
+  import Legend from "/app/component/Legend.js";
+  import Navbar from "/app/component/Navbar.js";
+  let navbar = new Navbar();
+      navbar.data()
+            .logo()
+            .nav()
   const selectorId = "#my_dataviz"
   const margin = { top: 50, right: 30, bottom: 30, left: 80 };
    // append the svg object to the body of the page
@@ -60,7 +65,7 @@ const draw = (customerList) => {
   const maxPurched = d3.max(customerList.users, (user) => user.profit)
   // set the dimensions and margins of the graph
   let   width = window.innerWidth - margin.left - margin.right;
-  let   height = window.innerHeight - margin.top - margin.bottom;
+  let   height = window.innerHeight-60 - margin.top - margin.bottom;
   var svg = graphConatiner
     .selectAll("svg")
     .data([1])
@@ -329,7 +334,7 @@ const onSelectBoxChange = (e) => {
 
 let selectBoxComp = new SelectBox(['All', 'purched', 'Abandoned', 'name']);
 
-selectBoxComp.addparent('select')
+selectBoxComp.addparent('select',`80%`,'0%')
              .addChild('select-box')
              .onChange(onSelectBoxChange)
 
