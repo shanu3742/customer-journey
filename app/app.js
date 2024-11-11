@@ -1,5 +1,5 @@
   import SelectBox from "/component/SelectBox.js";
-  import CoustomerFactory from "/factory/Coustomer.journey.js";
+  import CoustomerAdapter from "/adapter/Coustomer.journey.js";
   import Legend from "/component/Legend.js";
   const selectorId = "#my_dataviz"
   const margin = { top: 50, right: 30, bottom: 30, left: 80 };
@@ -36,7 +36,7 @@
             .text()
 
 
-  let networkFactory = new CoustomerFactory();
+  let networkadapter = new CoustomerAdapter();
   // import data  from '/coustomer/journey/getData'
  let data={};
  let customerData = {}
@@ -56,7 +56,7 @@ let isDoubleClickOn = false;
 
 const draw = (customerList) => {
 
-  let networkData = networkFactory.coustomerNetworkFactory(customerList)
+  let networkData = networkadapter.coustomerNetworkFactory(customerList)
   const maxPurched = d3.max(customerList.users, (user) => user.profit)
   // set the dimensions and margins of the graph
   let   width = window.innerWidth - margin.left - margin.right;

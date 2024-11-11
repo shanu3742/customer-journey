@@ -1,4 +1,4 @@
-class CoustomerFactory {
+class CoustomerAdapter {
     constructor(){}
 
     coustomerNetworkFactory(customerList){
@@ -73,4 +73,4 @@ class CoustomerFactory {
     }
 }
 
-export default CoustomerFactory;
+export default CoustomerAdapter ;
