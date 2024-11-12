@@ -60,7 +60,6 @@ let isDoubleClickOn = false;
 
 
 const draw = (customerList) => {
-
   let networkData = networkadapter.coustomerNetworkFactory(customerList)
   const maxPurched = d3.max(customerList.users, (user) => user.profit)
   // set the dimensions and margins of the graph
@@ -264,77 +263,49 @@ const draw = (customerList) => {
 
 
 const onSelectBoxChange = (e) => {
-  // Get the selected option's value
   const selectedOption = e.target.value;
 
-  // Log the selected option or perform other actions
-  console.log("Selected option:", selectedOption);
-
   if (selectedOption === 'name') {
-
-    let result = {
-      ...data, users: data.users.map((el) => {
-        return {
-          name: el.name,
-          id: el.id
-        }
-      })
-    }
-    console.log('result', result)
-    customerData = JSON.parse(JSON.stringify(result));
-
+    customerData = handleNameTypeFilter(data)
   }
-  if (selectedOption === 'name') {
-
-    let result = {
-      ...data, users: data.users.map((el) => {
-        return {
-          name: el.name,
-          id: el.id
-        }
-      })
-    }
-    console.log('result', result)
-    customerData = JSON.parse(JSON.stringify(result));
-
+  if (selectedOption === 'Abandoned' || selectedOption === 'purched') {
+    customerData = handlePurchedTypeFilter(data,selectedOption)
   }
-
-  if (selectedOption === 'purched') {
-
-    let result = {
-      ...data, users: data.users.filter((el) => {
-        let stringObject = JSON.stringify(el).toLocaleLowerCase();
-
-        return stringObject.includes(selectedOption.toLocaleLowerCase())
-      })
-    }
-    console.log('result', result)
-    customerData = JSON.parse(JSON.stringify(result));
-
-  }
-
-  if (selectedOption === 'Abandoned') {
-    let result = {
-      ...data, users: data.users.filter((el) => {
-        let stringObject = JSON.stringify(el).toLocaleLowerCase();
-
-        return stringObject.includes(selectedOption.toLocaleLowerCase())
-      })
-    }
-    console.log('result', result)
-    customerData = JSON.parse(JSON.stringify(result));
-  }
-
   if (selectedOption === 'All') {
     customerData = JSON.parse(JSON.stringify(data));
   }
 
+
   draw(customerData)
+}
+
+const handleNameTypeFilter = (filterData) => {
+  let result = {
+    ...filterData, users: filterData.users.map((el) => {
+      return {
+        name: el.name,
+        id: el.id
+      }
+    })
+  }
+  return JSON.parse(JSON.stringify(result));
+}
+
+const handlePurchedTypeFilter = (filterData,filterType) => {
+  let result = {
+    ...filterData, users: filterData.users.filter((el) => {
+      let stringObject = JSON.stringify(el).toLocaleLowerCase();
+      return stringObject.includes(filterType.toLocaleLowerCase())
+    })
+  }
+ 
+  let filterCoustomerData = JSON.parse(JSON.stringify(result));
+  return filterCoustomerData
 }
 
 let selectBoxComp = new SelectBox(['All', 'purched', 'Abandoned', 'name']);
 
-selectBoxComp.addparent('select',`80%`,'0%')
+selectBoxComp.addparent('select',`90%`,'0%')
              .addChild('select-box')
              .onChange(onSelectBoxChange)
 
