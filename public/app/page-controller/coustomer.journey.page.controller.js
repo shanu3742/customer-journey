@@ -44,13 +44,15 @@
             .text()
 
 
-            // Attach a change event listener
-
+// Attach a change event listener
+const width = window.innerWidth;
+const height = window.innerHeight;
+console.log(width)
 let graph = new CustomerJourneyGraph();
 graph.select(selectorId)
+      .setWidth(width)
+      .setHeight(height)
       .legend(legendDetails)
-      .setWidth()
-      .setHeight()
   // import data  from '/coustomer/journey/getData'
  let data={};
  let customerData = {}
@@ -120,9 +122,7 @@ selectBoxComp.addparent('select',`90%`,'0%')
 
 
 window.addEventListener('resize',() => {
-  graph.select(selectorId)
-       .setWidth()
-       .setHeight()
-       .draw()
+// Attach a change event listener
+        graph.resize()
 })
 

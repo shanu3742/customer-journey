@@ -3,6 +3,7 @@ let networkadapter = new CoustomerAdapter();
 const MARGIN = { top: 50, right: 30, bottom: 30, left: 80 };
 
 class CustomerJourneyGraph {
+    svgContainer=null;
     svg=null;
     nodeEl=null;
     linkEl=null;
@@ -10,16 +11,19 @@ class CustomerJourneyGraph {
     width=1000;
     height =1000;
     chartData={};
-    legendDetails
+    legendDetails;
+    networkData;
+    isResize= false;
+    timeOutId;
     constructor(){}
-    setWidth(){
-        console.log('width',window.innerWidth)
-     this.width = window.innerWidth - MARGIN.left - MARGIN.right;
+    setWidth(width=400){
+     this.width = width - MARGIN.left - MARGIN.right;
+     this.svgContainer.attr('width', this.width + MARGIN.left + MARGIN.right);
      return this;
     }
-    setHeight(){
-        console.log('innerHeight',window.innerHeight)
-        this.height = window.innerHeight-60 - MARGIN.top - MARGIN.bottom;
+    setHeight(height=400){
+        this.height = height-60 - MARGIN.top - MARGIN.bottom;
+        this.svgContainer.attr('height',this.height + MARGIN.top + MARGIN.bottom)
         return this;
     }
     legend(legend){
@@ -27,28 +31,50 @@ class CustomerJourneyGraph {
     return this;
     }
     select(id){
-        this.svg = d3.select(`${id}`)
-                    .selectAll(`svg`)
-                    .data([1])
-                    .join('svg')
-                    .attr("width", this.width + MARGIN.left + MARGIN.right)
-                    .attr("height", this.height + MARGIN.top + MARGIN.bottom)
-                    .selectAll("g#graph-area")
-                    .data((d) => [d])
-                    .join('g')
-                    .attr('id', 'graph-area')
-                    .attr("transform",
-                    "translate(" + MARGIN.left + "," + MARGIN.top + ")");
+       this.svgContainer =  d3.select(`${id}`)
+                              .selectAll(`svg`)
+                              .data([1])
+                              .join('svg')
+                              .attr("width", this.width + MARGIN.left + MARGIN.right)
+                              .attr("height", this.height + MARGIN.top + MARGIN.bottom)
+
+        this.svg = this.svgContainer
+                        .selectAll("g#graph-area")
+                        .data((d) => [d])
+                        .join('g')
+                        .attr('id', 'graph-area')
+                        .attr("transform",
+                        "translate(" + MARGIN.left + "," + MARGIN.top + ")");
         return this;
     }
     data(chartData){
         this.chartData= chartData;
+        this.networkData = networkadapter.coustomerNetworkFactory(this.chartData)
         return this;
     }
 
+    resize(){
+      console.log('resize')
+      /**
+       * clear any time 
+       */
+      if(this.isResize===false){
+      this.timeOutId=   setTimeout(() => {
+          this.isResize=true;
+          if(this.isResize ){
+            console.log('re-draw')
+            this.setWidth(window.innerWidth);
+            this.setHeight(window.innerHeight);
+            this.draw();
+            this.isResize=false;
+          }
+        },2000)
+      }
+    
+     
+    }
     draw(){
         let isDoubleClickOn = false;
-        let networkData = networkadapter.coustomerNetworkFactory(this.chartData)
         const maxPurched = d3.max(this.chartData.users, (user) => user.profit) 
         let rect = this.svg.selectAll('rect.overlay').data([1]).join('rect').attr('class', 'overlay').attr('width', this.width).attr('height', this.height).attr('fill', 'transparent')
       
@@ -96,10 +122,10 @@ class CustomerJourneyGraph {
           }
       
         // Let's list the force we wanna apply on the network
-        var simulation = d3.forceSimulation(networkData.nodes)                 // Force algorithm is applied to data.nodes
+        var simulation = d3.forceSimulation(this.networkData.nodes)                 // Force algorithm is applied to data.nodes
           .force("link", d3.forceLink()                               // This force provides links between nodes
             .id(function (d) { return d.id; })                     // This provide  the id of a node
-            .links(networkData.links)                                    // and this the list of links
+            .links(this.networkData.links)                                    // and this the list of links
           )
           .force("charge", d3.forceManyBody().strength(-15))         // This adds repulsion between nodes. Play with the -400 for the repulsion strength
           .force("center", d3.forceCenter(this.width / 2, this.height / 2))     // This force attracts nodes to the center of the svg area
@@ -115,7 +141,7 @@ class CustomerJourneyGraph {
         // Initialize the links
         this.linkEl = this.svg
           .selectAll("line")
-          .data(networkData.links)
+          .data(this.networkData.links)
           .join("line")
           .style("stroke", "#d4d4d4")
           .attr('opacity', 0.4)
@@ -128,7 +154,7 @@ class CustomerJourneyGraph {
         // Initialize the text
         this.textEl = this.svg
           .selectAll("text")
-          .data(networkData.nodes)
+          .data(this.networkData.nodes)
           .join("text")
           .attr('opacity', 0)
           .attr('class', (d) => {
@@ -151,13 +177,13 @@ class CustomerJourneyGraph {
         // Initialize the nodes
         this.nodeEl = this.svg
           .selectAll("circle")
-          .data(networkData.nodes)
+          .data(this.networkData.nodes)
           .join("circle")
           .attr("r", (d) => {
             return d?.profit ? radiusScale(d.profit) : 5
           })
           .style("fill", (d) => {
-            return d.id === networkData.nodes[0].id ?this.legendDetails.app.color: d.type === 'user' ? this.legendDetails.user.color: d.name === 'purched' ? this.legendDetails.purchase.color : d.name === 'Abandoned' ?this.legendDetails.abandoned.color : this.legendDetails.intermediary.color
+            return d.id === this.networkData.nodes[0].id ?this.legendDetails.app.color: d.type === 'user' ? this.legendDetails.user.color: d.name === 'purched' ? this.legendDetails.purchase.color : d.name === 'Abandoned' ?this.legendDetails.abandoned.color : this.legendDetails.intermediary.color
           })
           .attr('opacity', 1)
           .attr('class', (d) => {
