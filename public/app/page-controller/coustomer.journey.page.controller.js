@@ -126,6 +126,7 @@ window.addEventListener('resize',() => {
   let height = window.innerHeight;
 // Attach a change event listener
         graph.resize((graphInstance) => {
+          //update all require parms on resize 
           graphInstance.setWidth(width)
                        .setHeight(height)
         })
