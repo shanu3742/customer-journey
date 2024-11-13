@@ -758,8 +758,8 @@ let coustomerData = {
         }
       },
       {
-        name: 'abhiwwwwnawdev',
-        id: "abhinawv0812wdw",
+        name: 'a3jhiwwwwnawdev',
+        id: "abhinawv312wdw",
         profit: 300,
         image: '',
         next: {
@@ -779,8 +779,8 @@ let coustomerData = {
         }
       },
       {
-        name: 'abhiwwwwwdnav',
-        id: "abhinawv08wed12",
+        name: 'abhiwwwwwdjhjnav',
+        id: "abhinawv08elewed12",
         profit: 300,
         image: '',
         next: {
@@ -800,8 +800,8 @@ let coustomerData = {
         }
       },
       {
-        name: 'abhiwwwwnddwav',
-        id: "abhinawv081wd2",
+        name: 'abhiwwwwenddwav',
+        id: "abhinawv08133nmwd2",
         profit: 300,
         image: '',
         next: {
