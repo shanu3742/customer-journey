@@ -95,24 +95,7 @@ class CustomerJourneyGraph {
             .on("end", dragended);
       
         }
-        // This function is run at each iteration of the force algorithm, updating the nodes position.
-        const ticked = () => {
-            this.linkEl
-              .attr("x1", function (d) { return d.source.x; })
-              .attr("y1", function (d) { return d.source.y; })
-              .attr("x2", function (d) { return d.target.x; })
-              .attr("y2", function (d) { return d.target.y; });
-        
-            this.nodeEl
-              .attr("cx", function (d) { return d.x; })
-              .attr("cy", function (d) { return d.y; });
-        
-        
-        
-            this.textEl
-              .attr("x", function (d) { return d.x; })
-              .attr("y", function (d) { return d.y; });
-          }
+       
       
         // Let's list the force we wanna apply on the network
         var simulation = d3.forceSimulation(this.networkData.nodes)                 // Force algorithm is applied to data.nodes
@@ -122,8 +105,8 @@ class CustomerJourneyGraph {
           )
           .force("charge", d3.forceManyBody().strength(-15))         // This adds repulsion between nodes. Play with the -400 for the repulsion strength
           .force("center", d3.forceCenter(this.width / 2, this.height / 2))     // This force attracts nodes to the center of the svg area
-          .on("tick", ticked)
-          .on("end", ticked);
+          .on("tick", this.#ticked)
+          .on("end", this.#ticked);
       
       
         const radiusScale = d3.scaleLinear().domain([0, maxPurched]).range([5, 19]);
@@ -165,6 +148,7 @@ class CustomerJourneyGraph {
             let id = d.id;
             return id;
           })
+          .style('user-select', 'none')
       
       
         // Initialize the nodes
@@ -249,6 +233,25 @@ class CustomerJourneyGraph {
       
       
       
+      }
+
+       // This function is run at each iteration of the force algorithm, updating the nodes position.
+      #ticked = () => {
+        this.linkEl
+          .attr("x1", function (d) { return d.source.x; })
+          .attr("y1", function (d) { return d.source.y; })
+          .attr("x2", function (d) { return d.target.x; })
+          .attr("y2", function (d) { return d.target.y; });
+    
+        this.nodeEl
+          .attr("cx", function (d) { return d.x; })
+          .attr("cy", function (d) { return d.y; });
+    
+    
+    
+        this.textEl
+          .attr("x", function (d) { return d.x; })
+          .attr("y", function (d) { return d.y; });
       }
       
 
