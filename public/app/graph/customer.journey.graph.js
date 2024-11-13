@@ -1,6 +1,8 @@
 import CoustomerAdapter from "/app/adapter/Coustomer.journey.js";
 let networkadapter = new CoustomerAdapter();
 const MARGIN = { top: 50, right: 30, bottom: 30, left: 80 };
+const DEFAULT_HEIGHT=500;
+const DEFAULT_WIDTH=500;
 
 class CustomerJourneyGraph {
     svgContainer=null;
@@ -8,8 +10,8 @@ class CustomerJourneyGraph {
     nodeEl=null;
     linkEl=null;
     textEl=null
-    width=1000;
-    height =1000;
+    width=DEFAULT_WIDTH;
+    height =DEFAULT_HEIGHT;
     chartData={};
     legendDetails;
     networkData;
@@ -53,25 +55,16 @@ class CustomerJourneyGraph {
         return this;
     }
 
-    resize(){
-      console.log('resize')
-      /**
-       * clear any time 
-       */
-      if(this.isResize===false){
-      this.timeOutId=   setTimeout(() => {
-          this.isResize=true;
-          if(this.isResize ){
-            console.log('re-draw')
-            this.setWidth(window.innerWidth);
-            this.setHeight(window.innerHeight);
-            this.draw();
-            this.isResize=false;
-          }
-        },2000)
+    resize(callback){
+      // Clear any existing timeout
+      if (this.timeOutId) {
+        clearTimeout(this.timeOutId);
       }
-    
-     
+      this.timeOutId=   setTimeout(() => {
+            callback(this)
+            this.draw();
+            clearTimeout(this.timeOutId)
+        },2000)   
     }
     draw(){
         let isDoubleClickOn = false;

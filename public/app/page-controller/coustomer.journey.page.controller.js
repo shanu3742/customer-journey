@@ -122,7 +122,12 @@ selectBoxComp.addparent('select',`90%`,'0%')
 
 
 window.addEventListener('resize',() => {
+  let width = window.innerWidth;
+  let height = window.innerHeight;
 // Attach a change event listener
-        graph.resize()
+        graph.resize((graphInstance) => {
+          graphInstance.setWidth(width)
+                       .setHeight(height)
+        })
 })
 
