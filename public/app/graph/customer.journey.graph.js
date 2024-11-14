@@ -110,34 +110,35 @@ class CustomerJourneyGraph {
     rect.on('click',this.#overlayClick)
 
   }
+  drag() {
+    function dragstarted(event,d,i) {
+      if (!event.active) myWorker.postMessage({type:'dragStart',nodeIndex:d.index, x: d.x, y: d.y })   //simulation.alphaTarget(0.3).restart();
+    }
+
+    function dragged(event,d) {
+      d.x = event.x;
+      d.y = event.y;
+      myWorker.postMessage({type:'dragStart',nodeIndex:d.index, x: d.x, y: d.y })
+    }
+
+    function dragended(event,d) {
+      if (!event.active) {
+        myWorker.postMessage({ type: 'dragEnd', nodeIndex: d.index });
+       }
+    }
+
+    return d3.drag()
+      .on("start", dragstarted)
+      .on("drag", dragged)
+      .on("end", dragended);
+
+  }
 
   onTickStart=() => {
     
     const maxPurched = d3.max(this.chartData.users, (user) => user.profit)
     const radiusScale = d3.scaleLinear().domain([0, maxPurched]).range([MIN_RADIUS,MAX_RADIUS])
-    function drag() {
-      function dragstarted(event,d,i) {
-        if (!event.active) myWorker.postMessage({type:'dragStart',nodeIndex:d.index, x: d.x, y: d.y })   //simulation.alphaTarget(0.3).restart();
-      }
-
-      function dragged(event,d) {
-        d.x = event.x;
-        d.y = event.y;
-        myWorker.postMessage({type:'dragStart',nodeIndex:d.index, x: d.x, y: d.y })
-      }
-
-      function dragended(event,d) {
-        if (!event.active) {
-          myWorker.postMessage({ type: 'dragEnd', nodeIndex: d.index });
-         }
-      }
-
-      return d3.drag()
-        .on("start", dragstarted)
-        .on("drag", dragged)
-        .on("end", dragended);
-
-    }
+  
 
 
     // Initialize the links
@@ -188,7 +189,7 @@ class CustomerJourneyGraph {
                             .on('dblclick',this.#nodeDoubleClick)
                             .on('mouseover',this.#nodeEnter)
                             .on('mouseout',this.#nodeMouseLeave)
-                            .call(drag());
+                            .call(this.drag());
 
   }
 
