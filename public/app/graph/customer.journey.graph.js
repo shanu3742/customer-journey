@@ -73,6 +73,13 @@ class CustomerJourneyGraph {
     }
     this.timeOutId = setTimeout(() => {
       callback(this)
+      if(myWorker){
+        myWorker.terminate();
+      }
+     
+      myWorker=  new Worker('/app/worker/worker.js');
+      let data= JSON.parse(JSON.stringify(this.chartData))
+      this.networkData = networkadapter.coustomerNetworkFactory(data)
       this.draw();
       clearTimeout(this.timeOutId)
     },500)
