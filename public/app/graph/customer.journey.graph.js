@@ -73,6 +73,7 @@ class CustomerJourneyGraph {
     },500)
   }
   draw() {
+    this.tickCount=0;
     let rect = this.svg.selectAll('rect.overlay').data([1]).join('rect').attr('class', 'overlay').attr('width', this.width).attr('height', this.height).attr('fill', 'transparent')
    
     /**

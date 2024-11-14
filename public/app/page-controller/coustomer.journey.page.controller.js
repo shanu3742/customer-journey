@@ -104,8 +104,8 @@ const handleNameTypeFilter = (filterData) => {
 const handlePurchedTypeFilter = (filterData,filterType) => {
   let result = {
     ...filterData, users: filterData.users.filter((el) => {
-      let stringObject = JSON.stringify(el).toLocaleLowerCase();
-      return stringObject.includes(filterType.toLocaleLowerCase())
+      let stringObject = JSON.stringify(el).toLowerCase();
+      return stringObject.includes(filterType.toLowerCase())
     })
   }
  

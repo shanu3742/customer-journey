@@ -11,12 +11,15 @@ self.onmessage = (event) => {
             const { width, height } = event.data;
             //get the node data when simulation run first time
             //and stor it in global scope of worker file 
-            if(!nodes.length && !links.length){
+            // if(!nodes.length && !links.length){
+            nodes=[];
+            links=[];
                 nodes = event.data.nodes;
                 links = event.data.links;
-            }
+            // }
             // Initialize the simulation only if it hasn't been created yet
             //and also store the simulation in global scope of worker file 
+            simulation=null;
             if (!simulation) {
                 simulation = d3.forceSimulation(nodes)
                     .force("link", d3.forceLink()
