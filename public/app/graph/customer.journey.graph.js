@@ -5,7 +5,7 @@ const DEFAULT_HEIGHT = 500;
 const DEFAULT_WIDTH = 500;
 const MIN_RADIUS=5;
 const MAX_RADIUS=19;
-
+let myWorker = new Worker('/app/worker/worker.js');
 class CustomerJourneyGraph {
   svgContainer = null;
   svg = null;
@@ -20,6 +20,8 @@ class CustomerJourneyGraph {
   isResize = false;
   isDoubleClickOn = false;
   timeOutId;
+  isMessageRecived=false;
+  tickCount =0;
   constructor() { }
   setWidth(width = 400) {
     this.width = width - MARGIN.left - MARGIN.right;
@@ -71,49 +73,43 @@ class CustomerJourneyGraph {
     }, 2000)
   }
   draw() {
-    const maxPurched = d3.max(this.chartData.users, (user) => user.profit)
     let rect = this.svg.selectAll('rect.overlay').data([1]).join('rect').attr('class', 'overlay').attr('width', this.width).attr('height', this.height).attr('fill', 'transparent')
+   
+    /**
+     * send message
+     */
+    myWorker.postMessage({nodes:this.networkData.nodes,links:this.networkData.links,width:this.width,height:this.height,type:'play'});
 
-    function drag(simulation) {
-      function dragstarted(event) {
-        if (!event.active) simulation.alphaTarget(0.3).restart();
-        event.subject.fx = event.subject.x;
-        event.subject.fy = event.subject.y;
-      }
+    /**
+     * 
+     * recived meessage
+     */
 
-      function dragged(event) {
-        event.subject.fx = event.x;
-        event.subject.fy = event.y;
-      }
-
-      function dragended(event) {
-        if (!event.active) simulation.alphaTarget(0);
-        event.subject.fx = null;
-        event.subject.fy = null;
-      }
-
-      return d3.drag()
-        .on("start", dragstarted)
-        .on("drag", dragged)
-        .on("end", dragended);
-
+    myWorker.onmessage = (event) => {
+     let data = event.data;
+    //  console.log('recived simulation data',data)
+     this.isMessageRecived= true;
+     if(this.tickCount===0){
+      this.networkData.links=data.links;
+      this.networkData.nodes= data.nodes;
+      this.onTickStart()
+     }else{
+      this.#ticked(data.links,data.nodes)
+     }
+     this.tickCount = this.tickCount+1;
+    //  console.log(this.tickCount)
     }
 
+   //overlay clicked
+    rect.on('click',this.#overlayClick)
 
-    // Let's list the force we wanna apply on the network
-    var simulation = d3.forceSimulation(this.networkData.nodes)                 // Force algorithm is applied to data.nodes
-      .force("link", d3.forceLink()                               // This force provides links between nodes
-        .id(function (d) { return d.id; })                     // This provide  the id of a node
-        .links(this.networkData.links)                                    // and this the list of links
-      )
-      .force("charge", d3.forceManyBody().strength(-15))         // This adds repulsion between nodes. Play with the -400 for the repulsion strength
-      .force("center", d3.forceCenter(this.width / 2, this.height / 2))     // This force attracts nodes to the center of the svg area
-      .on("tick", this.#ticked)
-      .on("end", this.#ticked);
+  }
 
-
+  onTickStart=() => {
+    
+    const maxPurched = d3.max(this.chartData.users, (user) => user.profit)
     const radiusScale = d3.scaleLinear().domain([0, maxPurched]).range([MIN_RADIUS,MAX_RADIUS]);
-
+    console.log('link',this.networkData.links,this.isMessageRecived)
     // Initialize the links
     this.linkEl = this.svg.selectAll("line")
                       .data(this.networkData.links)
@@ -162,11 +158,7 @@ class CustomerJourneyGraph {
                             .on('dblclick',this.#nodeDoubleClick)
                             .on('mouseover',this.#nodeEnter)
                             .on('mouseout',this.#nodeMouseLeave)
-                            .call(drag(simulation));
-
-
-   //overlay clicked
-    rect.on('click',this.#overlayClick)
+                            // .call(drag());
 
   }
 
@@ -226,20 +218,23 @@ class CustomerJourneyGraph {
   }
 
   // This function is run at each iteration of the force algorithm, updating the nodes position.
-  #ticked = () => {
+  #ticked = (links,nodes) => {
     this.linkEl
+      .data(links)
       .attr("x1", function (d) { return d.source.x; })
       .attr("y1", function (d) { return d.source.y; })
       .attr("x2", function (d) { return d.target.x; })
       .attr("y2", function (d) { return d.target.y; });
 
     this.nodeEl
+      .data(nodes)
       .attr("cx", function (d) { return d.x; })
       .attr("cy", function (d) { return d.y; });
 
 
 
     this.textEl
+      .data(nodes)
       .attr("x", function (d) { return d.x; })
       .attr("y", function (d) { return d.y; });
   }
