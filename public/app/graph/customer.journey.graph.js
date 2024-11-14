@@ -85,59 +85,61 @@ class CustomerJourneyGraph {
     },500)
   }
   draw() {
-    this.tickCount=0;
-    let rect = this.svg.selectAll('rect.overlay').data([1]).join('rect').attr('class', 'overlay').attr('width', this.width).attr('height', this.height).attr('fill', 'transparent')
-   
-    /**
-     * send message
-     */
-    myWorker.postMessage({nodes:this.networkData.nodes,links:this.networkData.links,width:this.width,height:this.height,type:'init'});
+                  this.tickCount=0;
+                  let rect = this.svg.selectAll('rect.overlay').data([1]).join('rect').attr('class', 'overlay').attr('width', this.width).attr('height', this.height).attr('fill', 'transparent')
+                
+                  /**
+                   * send message
+                   */
+                  myWorker.postMessage({nodes:this.networkData.nodes,links:this.networkData.links,width:this.width,height:this.height,type:'init'});
 
-    /**
-     * 
-     * recived meessage
-     */
+                  /**
+                   * 
+                   * recived meessage
+                   */
 
-    myWorker.onmessage = (event) => {
-     let data = event.data;
-    //  console.log('recived simulation data',data)
-     this.isMessageRecived= true;
-     if(this.tickCount===0){
-      this.networkData.links=data.links;
-      this.networkData.nodes= data.nodes;
-      this.onTickStart()
-     }else{
-      this.#ticked(data.links,data.nodes)
-     }
-     this.tickCount = this.tickCount+1;
-    //  console.log(this.tickCount)
-    }
+                  myWorker.onmessage = (event) => {
+                  let data = event.data;
+                  //  console.log('recived simulation data',data)
+                  this.isMessageRecived= true;
+                  if(this.tickCount===0){
+                    this.networkData.links=data.links;
+                    this.networkData.nodes= data.nodes;
+                    this.onTickStart()
+                  }else{
+                    this.#ticked(data.links,data.nodes)
+                  }
+                  this.tickCount = this.tickCount+1;
+                  //  console.log(this.tickCount)
+                  }
 
-   //overlay clicked
-    rect.on('click',this.#overlayClick)
+                //overlay clicked
+                  rect.on('click',this.#overlayClick)
 
   }
+
+
+
+  dragstarted(event,d,i) {
+    if (!event.active) myWorker.postMessage({type:'dragStart',nodeIndex:d.index, x: d.x, y: d.y })   //simulation.alphaTarget(0.3).restart();
+  }
+  dragged(event,d) {
+    d.x = event.x;
+    d.y = event.y;
+    myWorker.postMessage({type:'dragStart',nodeIndex:d.index, x: d.x, y: d.y })
+  }
+  
+  dragended(event,d) {
+    if (!event.active) {
+      myWorker.postMessage({ type: 'dragEnd', nodeIndex: d.index });
+     }
+  }
+
   drag() {
-    function dragstarted(event,d,i) {
-      if (!event.active) myWorker.postMessage({type:'dragStart',nodeIndex:d.index, x: d.x, y: d.y })   //simulation.alphaTarget(0.3).restart();
-    }
-
-    function dragged(event,d) {
-      d.x = event.x;
-      d.y = event.y;
-      myWorker.postMessage({type:'dragStart',nodeIndex:d.index, x: d.x, y: d.y })
-    }
-
-    function dragended(event,d) {
-      if (!event.active) {
-        myWorker.postMessage({ type: 'dragEnd', nodeIndex: d.index });
-       }
-    }
-
     return d3.drag()
-      .on("start", dragstarted)
-      .on("drag", dragged)
-      .on("end", dragended);
+      .on("start", this.dragstarted)
+      .on("drag",this.dragged)
+      .on("end", this.dragended);
 
   }
 
