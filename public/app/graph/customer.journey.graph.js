@@ -70,7 +70,7 @@ class CustomerJourneyGraph {
       callback(this)
       this.draw();
       clearTimeout(this.timeOutId)
-    }, 2000)
+    },500)
   }
   draw() {
     let rect = this.svg.selectAll('rect.overlay').data([1]).join('rect').attr('class', 'overlay').attr('width', this.width).attr('height', this.height).attr('fill', 'transparent')
@@ -78,7 +78,7 @@ class CustomerJourneyGraph {
     /**
      * send message
      */
-    myWorker.postMessage({nodes:this.networkData.nodes,links:this.networkData.links,width:this.width,height:this.height,type:'play'});
+    myWorker.postMessage({nodes:this.networkData.nodes,links:this.networkData.links,width:this.width,height:this.height,type:'init'});
 
     /**
      * 
@@ -108,8 +108,33 @@ class CustomerJourneyGraph {
   onTickStart=() => {
     
     const maxPurched = d3.max(this.chartData.users, (user) => user.profit)
-    const radiusScale = d3.scaleLinear().domain([0, maxPurched]).range([MIN_RADIUS,MAX_RADIUS]);
-    console.log('link',this.networkData.links,this.isMessageRecived)
+    const radiusScale = d3.scaleLinear().domain([0, maxPurched]).range([MIN_RADIUS,MAX_RADIUS])
+    function drag() {
+      function dragstarted(event,d,i) {
+        console.log(d,i)
+        if (!event.active) myWorker.postMessage({type:'dragStart',nodeIndex:d.index, x: d.x, y: d.y })   //simulation.alphaTarget(0.3).restart();
+      }
+
+      function dragged(event,d) {
+        d.x = event.x;
+        d.y = event.y;
+        myWorker.postMessage({type:'dragStart',nodeIndex:d.index, x: d.x, y: d.y })
+      }
+
+      function dragended(event,d) {
+        if (!event.active) {
+          myWorker.postMessage({ type: 'dragEnd', nodeIndex: d.index });
+         }
+      }
+
+      return d3.drag()
+        .on("start", dragstarted)
+        .on("drag", dragged)
+        .on("end", dragended);
+
+    }
+
+
     // Initialize the links
     this.linkEl = this.svg.selectAll("line")
                       .data(this.networkData.links)
@@ -158,7 +183,7 @@ class CustomerJourneyGraph {
                             .on('dblclick',this.#nodeDoubleClick)
                             .on('mouseover',this.#nodeEnter)
                             .on('mouseout',this.#nodeMouseLeave)
-                            // .call(drag());
+                            .call(drag());
 
   }
 
