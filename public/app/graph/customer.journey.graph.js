@@ -5,7 +5,7 @@ const DEFAULT_HEIGHT = 500;
 const DEFAULT_WIDTH = 500;
 const MIN_RADIUS=5;
 const MAX_RADIUS=19;
-let myWorker = new Worker('/app/worker/worker.js');
+let myWorker;
 class CustomerJourneyGraph {
   svgContainer = null;
   svg = null;
@@ -56,6 +56,11 @@ class CustomerJourneyGraph {
   }
 
   data(chartData) {
+    if(myWorker){
+      myWorker.terminate();
+    }
+   
+    myWorker=  new Worker('/app/worker/worker.js');
     this.chartData = chartData;
     this.networkData = networkadapter.coustomerNetworkFactory(this.chartData)
     return this;
@@ -112,7 +117,6 @@ class CustomerJourneyGraph {
     const radiusScale = d3.scaleLinear().domain([0, maxPurched]).range([MIN_RADIUS,MAX_RADIUS])
     function drag() {
       function dragstarted(event,d,i) {
-        console.log(d,i)
         if (!event.active) myWorker.postMessage({type:'dragStart',nodeIndex:d.index, x: d.x, y: d.y })   //simulation.alphaTarget(0.3).restart();
       }
 
