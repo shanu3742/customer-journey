@@ -1,6 +1,8 @@
 class Navbar {
   #navData = [];
-  constructor() {}
+  constructor() {
+    
+  }
 
   data(
     navData = [
@@ -39,17 +41,76 @@ class Navbar {
        
   }
   nav() {
+    let isMoblie = window.innerWidth<775;
     let header = d3.select("header");
-    header.selectAll('div.navlink')
-        .data([1])
-        .join('div')
-        .attr('class','navlink')
-        .selectAll("a")
-        .data(this.#navData)
-        .join("a")
-        .attr("href", (d) => d.linkTo)
-        .text((d) => d.label);
+    if(!isMoblie){
+      header.selectAll('div.navlink')
+      .data([1])
+      .join('div')
+      .attr('class','navlink')
+      .selectAll("a")
+      .data(this.#navData)
+      .join("a")
+      .attr("href", (d) => d.linkTo)
+      .text((d) => d.label);
+    }
+    if(isMoblie){
+   let button =    header.selectAll('button.menu-mobile')
+                        .data([1])
+                        .join('button')
+                        .attr('class','menu-mobile mx')
+                        .text(`🟰`)
+                        .attr('style',`font-size:36px`)
+
+       button.on('click',this.onMobileMenuOpen)
+    }
+
+   
+    
     return this;
   }
+
+  onMobileMenuOpen = ()=> {
+      console.log('mobile click')
+      let menuBox = d3.select(".page-container");
+
+  let mobileMenuContainer =    menuBox.selectAll('div.menu-mobile-box')
+                                      .data([1])
+                                      .join('div')
+                                      .attr('class','menu-mobile-box')
+
+    
+   let button =   mobileMenuContainer.selectAll('button')
+                         .data([1])
+                         .join('button')
+                         .attr('class','close-button')
+                         .text(`❌`)
+                         .attr('style',`font-size:36px`)
+    
+                         let navContainer =   mobileMenuContainer.selectAll('div.nav-link-container-mobile')
+                         .data([1])
+                         .join('div')
+                         .attr('class','nav-link-container-mobile')
+
+                         navContainer.selectAll('div.navlink')
+                                  .data([1])
+                                  .join('div')
+                                  .attr('class','navlink flex-box column align-items')
+                                  .selectAll("a")
+                                  .data(this.#navData)
+                                  .join("a")
+                                  .attr("href", (d) => d.linkTo)
+                                  .text((d) => d.label);
+                                
+
+     button.on('click',this.onMobileMenuClose)
+              
+  }
+  onMobileMenuClose = () => {
+    let menuConatiner = d3.selectAll('div.menu-mobile-box');
+    menuConatiner.remove()
+  }
+
+
 }
 export default Navbar;

@@ -60,7 +60,7 @@ let graphContainer = document.getElementById('graph-container');
 let bipolarGraph = new  BipolarGraph();
     bipolarGraph.select(graphContainer)
                 .data(data)
-                .width(450)
+                .width(350)
                 .height(500)
                 .color(['#6B3D83','#f1addf'])
                 .groundHeight(40)

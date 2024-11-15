@@ -24,4 +24,18 @@
 .navlink>a:hover{
     opacity: 0.8;
 }
+.navlink-mobile>a{
+    margin: 4px;
+    background-color: rgb(92, 92, 253);
+    padding: 5px 10px;
+    border: 1px solid blue;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.navlink-mobile>a:hover{
+    opacity: 0.8;
+}
+
 
