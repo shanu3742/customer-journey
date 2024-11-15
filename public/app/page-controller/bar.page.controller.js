@@ -1,4 +1,4 @@
-
+import Navbar from "/app/component/Navbar.js";
 console.log('hello bar page ----->')
 
 
@@ -50,7 +50,12 @@ let data  =   [
 import { BipolarGraph } from "/app/graph/Bipolar.graph.js";
 
 
+
 const main = () => {
+  let navbar = new Navbar();
+      navbar.data()
+            .logo()
+            .nav()
 let graphContainer = document.getElementById('graph-container');
 let bipolarGraph = new  BipolarGraph();
     bipolarGraph.select(graphContainer)
