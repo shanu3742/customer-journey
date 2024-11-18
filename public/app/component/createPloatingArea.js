@@ -1,11 +1,11 @@
 
-const createPloatingArea = (selector,containerWidth,containerHeight,margin) => {
+const createPloatingArea = (selector,containerWidth,containerHeight,margin,childSelectorId='svg-container') => {
 const dataToJoin=[1]
     // append the svg object to the div called 'my_dataviz'
-const svg = d3.select(selector).selectAll('svg#svg-container')
+const svg = d3.select(selector).selectAll(`svg#${childSelectorId}`)
     .data(dataToJoin)
     .join('svg')
-    .attr('id','svg-container')
+    .attr('id',childSelectorId)
     .attr('width',containerWidth)
     .attr('height',containerHeight)
     // .attr('style','background:white')

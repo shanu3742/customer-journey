@@ -15,6 +15,10 @@ class Navbar {
         label: "3d  bar chart",
         linkTo: "/coustomer/journey/bar",
       },
+      {
+        label: "score trajectory graph",
+        linkTo: "/coustomer/journey/scoreTrajectory",
+      },
     ]
   ) {
     this.#navData = navData;
