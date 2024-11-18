@@ -19,7 +19,7 @@ class Navbar {
     this.#navData = navData;
     return this;
   }
-  logo(){
+  logo(logUrl='https://avatars.githubusercontent.com/u/65018865?v=4'){
 
     let header = d3.select("header").attr('class','header flex-box space-between mobile-box mobile-space-between');
     header.selectAll('a#logo')
@@ -31,8 +31,8 @@ class Navbar {
         .selectAll('img')
         .data([1])
         .join('img')
-        .attr("src", "https://www.w3schools.com/tags/img_girl.jpg") 
-        .attr("alt", "Description of the image")
+        .attr("src",logUrl) 
+        .attr("alt", "shanu profile")
         .attr('width','40')
         .attr('height','40')
         .attr('class','circle')
@@ -62,7 +62,7 @@ class Navbar {
                         .text(`🟰`)
                         .attr('style',`font-size:36px`)
 
-       button.on('click',this.onMobileMenuOpen)
+       button.on('click',this.#onMobileMenuOpen)
     }
 
    
@@ -70,7 +70,7 @@ class Navbar {
     return this;
   }
 
-  onMobileMenuOpen = ()=> {
+  #onMobileMenuOpen = ()=> {
       console.log('mobile click')
       let menuBox = d3.select(".page-container");
 
@@ -103,10 +103,10 @@ class Navbar {
                                   .text((d) => d.label);
                                 
 
-     button.on('click',this.onMobileMenuClose)
+     button.on('click',this.#onMobileMenuClose)
               
   }
-  onMobileMenuClose = () => {
+  #onMobileMenuClose = () => {
     let menuConatiner = d3.selectAll('div.menu-mobile-box');
     menuConatiner.remove()
   }
