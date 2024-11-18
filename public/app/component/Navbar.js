@@ -1,7 +1,8 @@
 class Navbar {
   #navData = [];
+  #sizeListner;
   constructor() {
-    
+  this.#sizeListner=  window.addEventListener('resize',this.onResize)
   }
 
   data(
@@ -42,8 +43,15 @@ class Navbar {
   }
   nav() {
     let isMoblie = window.innerWidth<775;
+
     let header = d3.select("header");
     if(!isMoblie){
+      let mobileNav = d3.select('.menu-mobile');
+      console.log('mobile nav')
+      if(mobileNav){
+        mobileNav.remove()
+      }
+
       header.selectAll('div.navlink')
       .data([1])
       .join('div')
@@ -55,6 +63,13 @@ class Navbar {
       .text((d) => d.label);
     }
     if(isMoblie){
+  let bigScrenNav = d3.select('.navlink');
+  console.log('bigscreen nav',bigScrenNav)
+  if(bigScrenNav){
+    bigScrenNav.remove()
+  }
+
+
    let button =    header.selectAll('button.menu-mobile')
                         .data([1])
                         .join('button')
@@ -111,6 +126,17 @@ class Navbar {
     menuConatiner.remove()
   }
 
+
+  onResize= () => {
+    this.nav()
+  }
+
+
+  onRemove(){
+   if(this.#sizeListner){
+    window.removeEventListener(this.#sizeListner)
+   }
+  }
 
 }
 export default Navbar;
