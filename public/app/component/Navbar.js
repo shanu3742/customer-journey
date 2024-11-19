@@ -51,7 +51,6 @@ class Navbar {
     let header = d3.select("header");
     if(!isMoblie){
       let mobileNav = d3.select('.menu-mobile');
-      console.log('mobile nav')
       if(mobileNav){
         mobileNav.remove()
       }
@@ -68,7 +67,6 @@ class Navbar {
     }
     if(isMoblie){
   let bigScrenNav = d3.select('.navlink');
-  console.log('bigscreen nav',bigScrenNav)
   if(bigScrenNav){
     bigScrenNav.remove()
   }
@@ -90,7 +88,6 @@ class Navbar {
   }
 
   #onMobileMenuOpen = ()=> {
-      console.log('mobile click')
       let menuBox = d3.select(".page-container");
 
   let mobileMenuContainer =    menuBox.selectAll('div.menu-mobile-box')

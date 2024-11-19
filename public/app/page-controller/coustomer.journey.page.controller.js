@@ -47,7 +47,6 @@
 // Attach a change event listener
 const width = window.innerWidth;
 const height = window.innerHeight;
-console.log(width)
 let graph = new CustomerJourneyGraph();
 graph.select(selectorId)
       .setWidth(width)

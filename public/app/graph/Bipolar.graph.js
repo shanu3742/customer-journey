@@ -45,7 +45,7 @@ class BipolarGraph {
 
 
     constructor(){
-        console.log("Instance created.");
+        console.log("bar graph Instance created.");
     }
 
 

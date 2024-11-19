@@ -2,7 +2,6 @@ const path = require('path');
 const coustomerData = require('../model/coustomer.journey.model');
 
 const onIndexRedirection = (req,res) => {
-    console.log('wait to redirect')
     res.redirect('/coustomer/journey/getJourney')
 }
 

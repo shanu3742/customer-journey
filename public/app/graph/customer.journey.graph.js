@@ -7,45 +7,45 @@ const MIN_RADIUS=5;
 const MAX_RADIUS=19;
 let myWorker;
 class CustomerJourneyGraph {
-  svgContainer = null;
-  svg = null;
-  nodeEl = null;
-  linkEl = null;
-  textEl = null
-  width = DEFAULT_WIDTH;
-  height = DEFAULT_HEIGHT;
-  chartData = {};
-  legendDetails;
-  networkData;
-  isResize = false;
-  isDoubleClickOn = false;
-  timeOutId;
-  isMessageRecived=false;
-  tickCount =0;
-  constructor() { }
+  #svgContainer = null;
+  #svg = null;
+  #nodeEl = null;
+  #linkEl = null;
+  #textEl = null
+  #width = DEFAULT_WIDTH;
+  #height = DEFAULT_HEIGHT;
+  #chartData = {};
+  #legendDetails;
+  #networkData;
+  #isDoubleClickOn = false;
+  #timeOutId;
+  #tickCount =0;
+  constructor() { 
+    console.log("customer journey graph Instance created.");
+  }
   setWidth(width = 400) {
-    this.width = width - MARGIN.left - MARGIN.right;
-    this.svgContainer.attr('width', this.width + MARGIN.left + MARGIN.right);
+    this.#width = width - MARGIN.left - MARGIN.right;
+    this.#svgContainer.attr('width', this.#width + MARGIN.left + MARGIN.right);
     return this;
   }
   setHeight(height = 400) {
-    this.height = height - 60 - MARGIN.top - MARGIN.bottom;
-    this.svgContainer.attr('height', this.height + MARGIN.top + MARGIN.bottom)
+    this.#height = height - 60 - MARGIN.top - MARGIN.bottom;
+    this.#svgContainer.attr('height', this.#height + MARGIN.top + MARGIN.bottom)
     return this;
   }
   legend(legend) {
-    this.legendDetails = legend;
+    this.#legendDetails = legend;
     return this;
   }
   select(id) {
-    this.svgContainer = d3.select(`${id}`)
+    this.#svgContainer = d3.select(`${id}`)
       .selectAll(`svg`)
       .data([1])
       .join('svg')
-      .attr("width", this.width + MARGIN.left + MARGIN.right)
-      .attr("height", this.height + MARGIN.top + MARGIN.bottom)
+      .attr("width", this.#width + MARGIN.left + MARGIN.right)
+      .attr("height", this.#height + MARGIN.top + MARGIN.bottom)
 
-    this.svg = this.svgContainer
+    this.#svg = this.#svgContainer
       .selectAll("g#graph-area")
       .data((d) => [d])
       .join('g')
@@ -61,37 +61,37 @@ class CustomerJourneyGraph {
     }
    
     myWorker=  new Worker('/app/worker/worker.js');
-    this.chartData = chartData;
-    this.networkData = networkadapter.coustomerNetworkFactory(this.chartData)
+    this.#chartData = chartData;
+    this.#networkData = networkadapter.coustomerNetworkFactory(this.#chartData)
     return this;
   }
 
   resize(callback) {
     // Clear any existing timeout
-    if (this.timeOutId) {
-      clearTimeout(this.timeOutId);
+    if (this.#timeOutId) {
+      clearTimeout(this.#timeOutId);
     }
-    this.timeOutId = setTimeout(() => {
+    this.#timeOutId = setTimeout(() => {
       callback(this)
       if(myWorker){
         myWorker.terminate();
       }
      
       myWorker=  new Worker('/app/worker/worker.js');
-      let data= JSON.parse(JSON.stringify(this.chartData))
-      this.networkData = networkadapter.coustomerNetworkFactory(data)
+      let data= JSON.parse(JSON.stringify(this.#chartData))
+      this.#networkData = networkadapter.coustomerNetworkFactory(data)
       this.draw();
-      clearTimeout(this.timeOutId)
+      clearTimeout(this.#timeOutId)
     },500)
   }
   draw() {
-                  this.tickCount=0;
-                  let rect = this.svg.selectAll('rect.overlay').data([1]).join('rect').attr('class', 'overlay').attr('width', this.width).attr('height', this.height).attr('fill', 'transparent')
+                  this.#tickCount=0;
+                  let rect = this.#svg.selectAll('rect.overlay').data([1]).join('rect').attr('class', 'overlay').attr('width', this.#width).attr('height', this.#height).attr('fill', 'transparent')
                 
                   /**
                    * send message
                    */
-                  myWorker.postMessage({nodes:this.networkData.nodes,links:this.networkData.links,width:this.width,height:this.height,type:'init'});
+                  myWorker.postMessage({nodes:this.#networkData.nodes,links:this.#networkData.links,width:this.#width,height:this.#height,type:'init'});
 
                   /**
                    * 
@@ -100,17 +100,14 @@ class CustomerJourneyGraph {
 
                   myWorker.onmessage = (event) => {
                   let data = event.data;
-                  //  console.log('recived simulation data',data)
-                  this.isMessageRecived= true;
-                  if(this.tickCount===0){
-                    this.networkData.links=data.links;
-                    this.networkData.nodes= data.nodes;
-                    this.onTickStart()
+                  if(this.#tickCount===0){
+                    this.#networkData.links=data.links;
+                    this.#networkData.nodes= data.nodes;
+                    this.#onTickStart()
                   }else{
                     this.#ticked(data.links,data.nodes)
                   }
-                  this.tickCount = this.tickCount+1;
-                  //  console.log(this.tickCount)
+                  this.#tickCount = this.#tickCount+1;
                   }
 
                 //overlay clicked
@@ -120,39 +117,39 @@ class CustomerJourneyGraph {
 
 
 
-  dragstarted(event,d,i) {
+  #dragstarted(event,d,i) {
     if (!event.active) myWorker.postMessage({type:'dragStart',nodeIndex:d.index, x: d.x, y: d.y })   //simulation.alphaTarget(0.3).restart();
   }
-  dragged(event,d) {
+  #dragged(event,d) {
     d.x = event.x;
     d.y = event.y;
     myWorker.postMessage({type:'dragStart',nodeIndex:d.index, x: d.x, y: d.y })
   }
   
-  dragended(event,d) {
+  #dragended(event,d) {
     if (!event.active) {
       myWorker.postMessage({ type: 'dragEnd', nodeIndex: d.index });
      }
   }
 
-  drag() {
+  #drag() {
     return d3.drag()
-      .on("start", this.dragstarted)
-      .on("drag",this.dragged)
-      .on("end", this.dragended);
+      .on("start", this.#dragstarted)
+      .on("drag",this.#dragged)
+      .on("end", this.#dragended);
 
   }
 
-  onTickStart=() => {
+  #onTickStart=() => {
     
-    const maxPurched = d3.max(this.chartData.users, (user) => user.profit)
+    const maxPurched = d3.max(this.#chartData.users, (user) => user.profit)
     const radiusScale = d3.scaleLinear().domain([0, maxPurched]).range([MIN_RADIUS,MAX_RADIUS])
   
 
 
     // Initialize the links
-    this.linkEl = this.svg.selectAll("line")
-                      .data(this.networkData.links)
+    this.#linkEl = this.#svg.selectAll("line")
+                      .data(this.#networkData.links)
                       .join("line")
                       .style("stroke", "#d4d4d4")
                       .attr('opacity', 0.4)
@@ -163,8 +160,8 @@ class CustomerJourneyGraph {
 
 
     // Initialize the text
-    this.textEl = this.svg.selectAll("text")
-                          .data(this.networkData.nodes)
+    this.#textEl = this.#svg.selectAll("text")
+                          .data(this.#networkData.nodes)
                           .join("text")
                           .attr('opacity', 0)
                           .attr('class', (d) => {
@@ -181,14 +178,14 @@ class CustomerJourneyGraph {
 
 
     // Initialize the nodes
-    this.nodeEl = this.svg.selectAll("circle")
-                            .data(this.networkData.nodes)
+    this.#nodeEl = this.#svg.selectAll("circle")
+                            .data(this.#networkData.nodes)
                             .join("circle")
                             .attr("r", (d) => {
                               return d?.profit ? radiusScale(d.profit) : 5
                             })
                             .style("fill", (d) => {
-                              return d.id === this.networkData.nodes[0].id ? this.legendDetails.app.color : d.type === 'user' ? this.legendDetails.user.color : d.name === 'purched' ? this.legendDetails.purchase.color : d.name === 'Abandoned' ? this.legendDetails.abandoned.color : this.legendDetails.intermediary.color
+                              return d.id === this.#networkData.nodes[0].id ? this.#legendDetails.app.color : d.type === 'user' ? this.#legendDetails.user.color : d.name === 'purched' ? this.#legendDetails.purchase.color : d.name === 'Abandoned' ? this.#legendDetails.abandoned.color : this.#legendDetails.intermediary.color
                             })
                             .attr('opacity', 1)
                             .attr('class', (d) => {
@@ -198,18 +195,18 @@ class CustomerJourneyGraph {
                             .on('dblclick',this.#nodeDoubleClick)
                             .on('mouseover',this.#nodeEnter)
                             .on('mouseout',this.#nodeMouseLeave)
-                            .call(this.drag());
+                            .call(this.#drag());
 
   }
 
   #overlayClick =  () => {
-    this.isDoubleClickOn = false;
+    this.#isDoubleClickOn = false;
     d3.selectAll('circle').transition().duration(500).attr('opacity', 1)
     d3.selectAll('line').transition().duration(500).attr('opacity', 0.4)
     d3.selectAll('text').transition().duration(500).attr('opacity', 0)
   }
   #nodeEnter =  (d, data) => {
-    if (this.isDoubleClickOn) {
+    if (this.#isDoubleClickOn) {
       return
     }
     d3.selectAll('circle').transition().duration(500).attr('opacity', 0.2)
@@ -218,7 +215,7 @@ class CustomerJourneyGraph {
     d3.select(`text#${data.id}`).transition().duration(500).attr('opacity', 1)
   }
   #nodeMouseLeave = (d, data) => {
-      if (this.isDoubleClickOn) {
+      if (this.#isDoubleClickOn) {
           return
       }
       //highlight all line and node and hide all text on mouse leave
@@ -227,10 +224,10 @@ class CustomerJourneyGraph {
       d3.select(`text#${data.id}`).transition().duration(500).attr('opacity', 0)
   }
   #nodeDoubleClick = (d, data, index) =>{
-      if (index === 0 || this.isDoubleClickOn) {
+      if (index === 0 || this.#isDoubleClickOn) {
         return;
       }
-      this.isDoubleClickOn = true;
+      this.#isDoubleClickOn = true;
       let selectedCircleType = data.id.split("-")[0];
       //select first element that is app name
       let appIconNodesText = d3.select("text");
@@ -259,21 +256,21 @@ class CustomerJourneyGraph {
 
   // This function is run at each iteration of the force algorithm, updating the nodes position.
   #ticked = (links,nodes) => {
-    this.linkEl
+    this.#linkEl
       .data(links)
       .attr("x1", function (d) { return d.source.x; })
       .attr("y1", function (d) { return d.source.y; })
       .attr("x2", function (d) { return d.target.x; })
       .attr("y2", function (d) { return d.target.y; });
 
-    this.nodeEl
+    this.#nodeEl
       .data(nodes)
       .attr("cx", function (d) { return d.x; })
       .attr("cy", function (d) { return d.y; });
 
 
 
-    this.textEl
+    this.#textEl
       .data(nodes)
       .attr("x", function (d) { return d.x; })
       .attr("y", function (d) { return d.y; });
