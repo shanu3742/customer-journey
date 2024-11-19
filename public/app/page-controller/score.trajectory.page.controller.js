@@ -1,9 +1,6 @@
 
 import { ScoreTrajectory } from "/app/graph/Score.Trajectory.js";
 import Navbar from "/app/component/Navbar.js";
-
-
-
 const main = () => {
 
     let navbar = new Navbar();
@@ -26,7 +23,5 @@ const main = () => {
   }
   fetchData()
 
-
 }
-
 main()
