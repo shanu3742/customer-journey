@@ -9,7 +9,7 @@ import { createVerticalLine } from "/app/component/logoTail.js";
 import { getLength } from "/app/utils/getLength.js";
 import { getPointAtLength } from "/app/utils/getPointAtLength.JS";
 import { createLinePath } from "/app/utils/lineGenerator.js";
-import { onScoreTrajectoryResize } from "/app/system/resize.js";
+import { onScreenResize } from "/app/system/resize.js";
 
 let DEFAULT_MARGIN={
     top:90,
@@ -27,6 +27,7 @@ class ScoreTrajectory {
     lineLength;
     data=[];
     selector;
+    #sizeListner;
 
     constructor({selector,width=450,height=450,margin=DEFAULT_MARGIN,imageSize=20,lineLength=40,data}){
         this.selector = selector;
@@ -42,15 +43,13 @@ class ScoreTrajectory {
 
 
     }
-    setProperties = (object) => {
-        for(let key in object){
-            this[key] = object[key]
-        }
+    setProperties = (width) => {
+        this.width= width;
         this.draw()
     }
 
     onResize=() => {
-        onScoreTrajectoryResize(this.setProperties, this.fixedWidth)
+        this.#sizeListner =   onScreenResize(this.setProperties, this.fixedWidth)
     }
 
 
@@ -97,6 +96,14 @@ chartData.forEach((el,i) => {
 
 
     })
+    }
+
+    remove(){  
+        this.data=null;
+        if (this.#sizeListner) {
+            window.removeEventListener('resize', this.#sizeListner);
+            this.#sizeListner = null;
+        }
     }
 
 }
