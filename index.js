@@ -1,7 +1,7 @@
 const express = require('express');
 const path = require('path');
 const APP_CONFIG = require('./config/app/app.config');
-const  customerJourneyRoutes  = require('./router/coustomer.journey.router');
+const  customerJourneyRoutes  = require('./router/customer.journey.router');
 const  barRoutes  = require('./router/bar.router');
 const  scoreTrajectoryRoutes  = require('./router/score.trajectory.router');
 

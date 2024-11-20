@@ -13,7 +13,7 @@ const main = () => {
   const height = 400;
   let scoreTrajectoryData =[];
   const fetchData =async  () => {
-    let result = await fetch('/coustomer/journey/getScoreTrajectoryData');
+    let result = await fetch('/app/graph/v1/getScoreTrajectoryData');
     let data = await result.json();
     scoreTrajectoryData = JSON.parse(JSON.stringify(data));
     //draw the trajectory graph

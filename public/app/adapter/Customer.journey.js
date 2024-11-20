@@ -1,7 +1,7 @@
-class CoustomerAdapter {
+class CustomerAdapter {
     constructor(){}
 
-    coustomerNetworkFactory(customerList){
+    customerNetworkFactory(customerList){
         const networkData = {
             nodes: [],
             links: []
@@ -73,4 +73,4 @@ class CoustomerAdapter {
     }
 }
 
-export default CoustomerAdapter ;
+export default CustomerAdapter ;

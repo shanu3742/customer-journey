@@ -11,7 +11,7 @@ let graphContainer = document.getElementById('graph-container');
 let bipolarGraph = new  BipolarGraph();
 
 const fetchData =async  () => {
-  let result = await fetch('/coustomer/journey/getBarData');
+  let result = await fetch('/app/graph/v1/getBarData');
   let data = await result.json();
   barData = JSON.parse(JSON.stringify(data));
   bipolarGraph.select(graphContainer)

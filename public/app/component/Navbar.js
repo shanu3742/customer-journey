@@ -8,16 +8,16 @@ class Navbar {
   data(
     navData = [
       {
-        label: "coustomer journey",
-        linkTo: "/coustomer/journey/getJourney",
+        label: "customer journey",
+        linkTo: "/app/graph/v1/getJourney",
       },
       {
         label: "3d  bar chart",
-        linkTo: "/coustomer/journey/bar",
+        linkTo: "/app/graph/v1/bar",
       },
       {
         label: "score trajectory graph",
-        linkTo: "/coustomer/journey/scoreTrajectory",
+        linkTo: "/app/graph/v1/scoreTrajectory",
       },
     ]
   ) {

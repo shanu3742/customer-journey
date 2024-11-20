@@ -1,4 +1,4 @@
-let customJourneyData = {
+let customerJourneyData = {
   platform: "Flipkart",
   users: [
     {
@@ -800,4 +800,4 @@ let customJourneyData = {
   ],
 };
 
-module.exports = customJourneyData;
+module.exports = customerJourneyData;

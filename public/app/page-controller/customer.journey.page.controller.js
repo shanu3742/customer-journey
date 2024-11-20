@@ -61,7 +61,7 @@ graph.select(selectorId)
  let data={};
  let customerData = {}
   const fetchData =async  () => {
-    let result = await fetch('/coustomer/journey/getData');
+    let result = await fetch('/app/graph/v1/getData');
     data = await result.json();
     customerData = JSON.parse(JSON.stringify(data));
     graph.data(customerData)

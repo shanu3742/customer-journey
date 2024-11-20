@@ -1,5 +1,5 @@
-import CoustomerAdapter from "/app/adapter/Coustomer.journey.js";
-let networkadapter = new CoustomerAdapter();
+import CustomerAdapter from "/app/adapter/customer.journey.js";
+let networkadapter = new CustomerAdapter();
 const MARGIN = { top: 50, right: 30, bottom: 30, left: 80 };
 const DEFAULT_HEIGHT = 500;
 const DEFAULT_WIDTH = 500;
@@ -62,7 +62,7 @@ class CustomerJourneyGraph {
    
     myWorker=  new Worker('/app/worker/worker.js');
     this.#chartData = chartData;
-    this.#networkData = networkadapter.coustomerNetworkFactory(this.#chartData)
+    this.#networkData = networkadapter.customerNetworkFactory(this.#chartData)
     return this;
   }
 
@@ -79,7 +79,7 @@ class CustomerJourneyGraph {
      
       myWorker=  new Worker('/app/worker/worker.js');
       let data= JSON.parse(JSON.stringify(this.#chartData))
-      this.#networkData = networkadapter.coustomerNetworkFactory(data)
+      this.#networkData = networkadapter.customerNetworkFactory(data)
       this.draw();
       clearTimeout(this.#timeOutId)
     },500)

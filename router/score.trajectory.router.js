@@ -1,7 +1,7 @@
 const express = require('express');
 const { getScoreTrajectory, getScoreTrajectoryPageCtr, getScoreTrajectoryData } = require('../controller/score.trajectory');
 const router = express.Router();
-router.get('/coustomer/journey/scoreTrajectory',getScoreTrajectory);
-router.get('/coustomer/journey/getScoreTrajectoryData',getScoreTrajectoryData)
-router.get('/coustomer/journey/getScoreTrajectoryPageCtr',getScoreTrajectoryPageCtr)
+router.get('/app/graph/v1/scoreTrajectory',getScoreTrajectory);
+router.get('/app/graph/v1/getScoreTrajectoryData',getScoreTrajectoryData)
+router.get('/app/graph/v1/getScoreTrajectoryPageCtr',getScoreTrajectoryPageCtr)
 module.exports= router;
