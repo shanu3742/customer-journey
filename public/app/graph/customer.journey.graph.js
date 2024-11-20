@@ -1,4 +1,4 @@
-import CustomerAdapter from "/app/adapter/customer.journey.js";
+import CustomerAdapter from "/app/adapter/Customer.journey.js";
 let networkadapter = new CustomerAdapter();
 const MARGIN = { top: 50, right: 30, bottom: 30, left: 80 };
 const DEFAULT_HEIGHT = 500;
