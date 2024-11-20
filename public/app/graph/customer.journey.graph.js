@@ -142,8 +142,8 @@ class CustomerJourneyGraph {
 
   #onTickStart=() => {
     
-    const maxPurched = d3.max(this.#chartData.users, (user) => user.profit)
-    const radiusScale = d3.scaleLinear().domain([0, maxPurched]).range([MIN_RADIUS,MAX_RADIUS])
+    const maxPurchased= d3.max(this.#chartData.users, (user) => user.profit)
+    const radiusScale = d3.scaleLinear().domain([0, maxPurchased]).range([MIN_RADIUS,MAX_RADIUS])
   
 
 
@@ -182,10 +182,10 @@ class CustomerJourneyGraph {
                             .data(this.#networkData.nodes)
                             .join("circle")
                             .attr("r", (d) => {
-                              return d?.profit ? radiusScale(d.profit) : 5
+                              return d?.profit && d.name ==='purchased' ? radiusScale(d.profit) : 5
                             })
                             .style("fill", (d) => {
-                              return d.id === this.#networkData.nodes[0].id ? this.#legendDetails.app.color : d.type === 'user' ? this.#legendDetails.user.color : d.name === 'purched' ? this.#legendDetails.purchase.color : d.name === 'Abandoned' ? this.#legendDetails.abandoned.color : this.#legendDetails.intermediary.color
+                              return d.id === this.#networkData.nodes[0].id ? this.#legendDetails.app.color : d.type === 'user' ? this.#legendDetails.user.color : d.name === 'purchased' ? this.#legendDetails.purchased.color : d.name === 'abandoned' ? this.#legendDetails.abandoned.color : d.name==='wishlist'? this.#legendDetails.wishlist.color :  this.#legendDetails.intermediary.color
                             })
                             .attr('opacity', 1)
                             .attr('class', (d) => {
@@ -198,6 +198,8 @@ class CustomerJourneyGraph {
                             .call(this.#drag());
 
   }
+
+ 
 
   #overlayClick =  () => {
     this.#isDoubleClickOn = false;

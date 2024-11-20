@@ -11,18 +11,23 @@
      color: '#41dc8e',
      label:'user name'
     },
-    purchase: {
+    purchased: {
       color:'#2970ac',
-      label:'Purchase completed'
+      label:'purchased completed'
     },
     abandoned:{
       color: '#fd150b',
       label:'Cart Abandoned'
     },
+    wishlist:{
+      color: '#e637a3',
+      label:'Item wishlist'
+   },
     intermediary:{
       color: '#ffc33b',
       label:'Intermediary action taken by customer'
-    }
+    },
+   
   }
   const selectorId = "#my_dataviz"
 
@@ -75,7 +80,7 @@ const onSelectBoxChange = (e) => {
   if (selectedOption === 'name') {
     customerData = handleNameTypeFilter(data)
   }
-  if (selectedOption === 'Abandoned' || selectedOption === 'purched') {
+  if (selectedOption === 'abandoned' || selectedOption === 'purchased') {
     customerData = handlePurchedTypeFilter(data,selectedOption)
   }
   if (selectedOption === 'All') {
@@ -112,7 +117,7 @@ const handlePurchedTypeFilter = (filterData,filterType) => {
   return filterCoustomerData
 }
 
-let selectBoxComp = new SelectBox(['All', 'purched', 'Abandoned', 'name']);
+let selectBoxComp = new SelectBox(['All', 'purchased', 'abandoned', 'name']);
 
 selectBoxComp.addparent('select',`90%`,'0%')
              .addChild('select-box')
