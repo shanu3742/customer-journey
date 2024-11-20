@@ -1,7 +1,7 @@
 class CustomerAdapter {
     constructor(){}
 
-    customerNetworkFactory(customerList){
+    customerNetworkAdapter(customerList){
         const networkData = {
             nodes: [],
             links: []

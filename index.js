@@ -1,5 +1,4 @@
 const express = require('express');
-const path = require('path');
 const APP_CONFIG = require('./config/app/app.config');
 const  customerJourneyRoutes  = require('./router/customer.journey.router');
 const  barRoutes  = require('./router/bar.router');
